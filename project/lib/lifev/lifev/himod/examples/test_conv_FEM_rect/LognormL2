@@ -1,0 +1,9 @@
+set y2label 'Error (relative) norm L2 log'
+set x2label 'Degrees of fredom YZ step log'
+set logscale x
+set logscale y
+
+# For the moment you have to set the max number of h
+plot 'ConvFEM.txt' u 1:2 w lp;
+replot 'ConvHiMod.dat' u 1:2 w lp;
+

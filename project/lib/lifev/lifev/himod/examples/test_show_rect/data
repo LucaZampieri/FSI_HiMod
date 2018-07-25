@@ -1,0 +1,59 @@
+[set]
+	verbose = 0
+[../]
+
+[himod]
+	casetest=Camini
+	#	 ___3
+	#  4	|   |
+	#	|___| 2
+	#	  1
+	#
+	# DDDD		
+     # DDDD_Adv	
+     # DDDD_ADR	
+     # DRDR		
+     # RRRR
+	# RR2D
+	# BDRR	
+	# BDDD	
+	# DD2D
+	# Camini (DDDD with omogeneous inflow)
+
+	m = 50
+	Nel = 20
+
+	[./export]
+		nx	= 21
+		ny	= 32
+		nz	= 32
+		solution = Soluzione
+		forceterm = Forzante
+	[../]
+[../]
+
+[prec]
+    prectype                     = Ifpack # Ifpack or ML
+    displayList                  = false
+
+    [./ifpack]
+        overlap                  = 2
+
+        [./fact]
+            ilut_level-of-fill   = 1
+            drop_tolerance       = 1.e-5
+            relax_value          = 0
+
+        [../amesos]
+            solvertype           = Amesos_KLU # Amesos_KLU or Amesos_Umfpack
+
+        [../partitioner]
+            overlap              = 2
+
+        [../schwarz]
+            reordering_type      = none #metis, rcm, none
+            filter_singletons    = true
+
+		[../]
+	[../]
+[../]
