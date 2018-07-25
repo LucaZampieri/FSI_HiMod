@@ -1,4 +1,3 @@
-:q
-
-
-
+/project/build/
+/project/output/
+*.o
