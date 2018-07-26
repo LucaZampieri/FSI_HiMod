@@ -1,19 +1,8 @@
 CXX = mpicxx
 CXXFLAGS = -std=c++11# -Wall
 
-
-LIB_DIR = home/zampieri/Desktop/tools_modules
-LIB_DIR2 = u/sw
+MODULE_DIR = u/sw
 PKGS_DIR = u/sw/pkgs/toolchains/gcc-glibc/5/pkgs
-
-# unused modifications
-#
-#
-
-# local muparser
-#-I/$(LIB_DIR)/muparser-2.2.5/include
-#-L/$(LIB_DIR)/muparser-2.2.5/lib
-#/$(LIB_DIR)/muparser-2.2.5/lib
 
 CPPFLAGS = -I. -I./lib/lifev \
  -I/$(PKGS_DIR)/muparser/2.2.5/include\
@@ -65,8 +54,8 @@ LIBFLAGS = -L/$(PKGS_DIR)/trilinos/12.6.3/lib \
 /$(PKGS_DIR)/hdf5/1.8.16/lib/libhdf5.so \
 /$(PKGS_DIR)/tbb/4.4/lib/libtbb.so -lz \
 /$(PKGS_DIR)/metis/5/lib/libparmetis.so \
-/$(LIB_DIR2)/pkgs/toolchains/gcc-glibc/5/prefix/lib/libgomp.so.1 \
-/$(LIB_DIR2)/pkgs/toolchains/gcc-glibc/5/base/lib/libmpi.so.12 \
+/$(MODULE_DIR)/pkgs/toolchains/gcc-glibc/5/prefix/lib/libgomp.so.1 \
+/$(MODULE_DIR)/pkgs/toolchains/gcc-glibc/5/base/lib/libmpi.so.12 \
 /$(PKGS_DIR)/metis/5/lib/libmetis.so \
 -lptscotch -lptscotcherr -lscotch -lscotcherr \
 /$(PKGS_DIR)/openblas/0.2.17/lib/libopenblas.so -lhwloc ./lib/parmetis/lib/libparmetis.a \
@@ -76,7 +65,7 @@ LIBFLAGS = -L/$(PKGS_DIR)/trilinos/12.6.3/lib \
 
 OBJS = build/FSIData.o build/FSISolver.o build/NSModalSpaceCircular.o build/ReferenceMap.o
 HEADERS = include/FSIData.hpp include/FSISolver.hpp include/NSModalSpaceCircular.hpp include/NSHiModAssemblerCircular.hpp include/ReferenceMap.hpp
-EXE = bin/main
+EXE = main
 
 .PHONY : all clean distclean
 
@@ -98,4 +87,4 @@ clean :
 	$(RM) build/*
 
 distclean : clean
-	$(RM) bin/main output/*
+	$(RM) $(EXE) output/*
