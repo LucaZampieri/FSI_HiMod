@@ -3,7 +3,7 @@
 [../]
 
 [himod]
-  rho     = 0.5
+  rho     = 0.6
   drho    = 0
   mx      = 5
   mr      = 5
