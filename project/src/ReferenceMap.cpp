@@ -449,8 +449,8 @@ setRadiusPrime()
     {
         M_radiusPrime[i] = (M_radius[i+1] - M_radius[i-1])/(M_nodes[i+1] - M_nodes[i-1]);
     }
-        M_radiusPrime[M_numbNodes-1] = (M_radius[M_numbNodes-1] - M_radius[M_numbNodes-2])/(M_nodes[M_numbNodes-1] - M_nodes[M_numbNodes-2]);
-    }
+    M_radiusPrime[M_numbNodes-1] = (M_radius[M_numbNodes-1] - M_radius[M_numbNodes-2])/(M_nodes[M_numbNodes-1] - M_nodes[M_numbNodes-2]);
+}
 
 void ReferenceMap::
 setRadius( const MBVector_type& radius )

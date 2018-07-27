@@ -483,31 +483,37 @@ class ReferenceMap
        // Retutn the 3D matrices
        const Vector3D_type& Jr3D() const
        {
-       return M_Jr3D;
+         return M_Jr3D;
        }
+
        const Vector3D_type& Jtheta3D() const
        {
-       return M_Jtheta3D;
+         return M_Jtheta3D;
        }
+
        const Vector3D_type& Dr3D() const
        {
-       return M_Dr3D;
+         return M_Dr3D;
        }
+
        const Vector3D_type& Dtheta3D() const
        {
-       return M_Dtheta3D;
+         return M_Dtheta3D;
        }
+
        const Vector3D_type& Drtheta3D() const
        {
-       return M_Drtheta3D;
+         return M_Drtheta3D;
        }
+
        const Vector3D_type& Dthetar3D() const
        {
-       return M_Dthetar3D;
+         return M_Dthetar3D;
        }
+
        const Vector3D_type& Jacobian3D() const
        {
-       return M_Jacobian3D;
+         return M_Jacobian3D;
        }
 
        //! Evaluation of the map
@@ -521,10 +527,12 @@ class ReferenceMap
        {
           return M_radius;
        }
+
        const MBVector_type& dR() const
        {
           return M_radiusPrime;
        }
+
        const MBVector_type& nodes() const
        {
           return M_nodes;
