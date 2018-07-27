@@ -467,10 +467,10 @@ public:
     typedef std::vector<std::vector<std::vector<std::tuple<Real, Real, Real>>>> grid_type;
 
     void addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const Real& rho_f, const Real& dt, ReferenceMap& refMap, const Real& t );
-    void addALEProblemFSI( const matrix_ptrType& systemMatrix, const Real& rho_f, const vector_type& wr, ReferenceMap& refMap, const Real& t );
-    void addWallProblemFSI( const matrix_ptrType& systemMatrix, const Real& rho_s, const Real& h_s, const Real& dt, const Real& E, const Real& csi, const Real& R0, ReferenceMap& refMap, const Real& t );
-    void addrhsFSI( const vector_ptrType& rhs, const vector_type& f, const vector_type& u_old, const Real& rho_f, const Real& dt );
-    void addWallrhsFSI( const vector_ptrType& rhs, const vector_type& urWall_old, const vector_type& etar_old, const Real& rho_s, const Real& h_s, const Real& dt, const Real& E, const Real& csi, const Real& R0 );
+    void addALEProblemFSI(    const matrix_ptrType& systemMatrix, const Real& rho_f, const vector_type& wr, ReferenceMap& refMap, const Real& t );
+    void addWallProblemFSI(   const matrix_ptrType& systemMatrix, const Real& rho_s, const Real& h_s, const Real& dt, const Real& E, const Real& csi, const Real& R0, ReferenceMap& refMap, const Real& t );
+    void addrhsFSI(           const vector_ptrType& rhs, const vector_type& f, const vector_type& u_old, const Real& rho_f, const Real& dt );
+    void addWallrhsFSI(       const vector_ptrType& rhs, const vector_type& urWall_old, const vector_type& etar_old, const Real& rho_s, const Real& h_s, const Real& dt, const Real& E, const Real& csi, const Real& R0 );
 
     void addBCxInOutFSI( const vector_ptrType& rhs, const Real& p1, const Real& p2 );
     void addBCrInOutFSI( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs );

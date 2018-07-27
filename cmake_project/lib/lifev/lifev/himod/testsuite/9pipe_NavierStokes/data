@@ -1,0 +1,84 @@
+[set]
+    verbose = 1
+
+[himod]
+# IMPORTANT: CHECK THAT PARAMETER D satisfies D = 2 * rho!
+    rho     = 0.5
+    drho    = 0
+    mx      = 5
+    mr      = 5
+    mtheta  = 5
+    mp      = 3
+[../]
+
+[mesh]
+    num_elements       = 24
+    lx                 = 6
+    Poly_type_velocity = P2
+    Poly_type_pressure = P1
+    points_file        = 'points.txt'
+    Npoints            = 
+[../]
+
+[fluid]
+    [./physics]
+        nu          = 0.035
+        viscosity   = 0.035
+        density     = 1
+        Rin         = 0.5
+        Rout        = 0.5
+        occlusion   = 0.45
+        deltaP      = 5
+        z0          = 1.335
+        delta0      = 0.45
+        flag_strain =
+    [../problem]
+        D           = 0.4
+        T           = 2 * 3.14159265358979323846264338327950288419716939937510
+        L           = 2
+        A           = 1 # amplitude of pressure oscillation
+    [../]
+[../]
+
+[time]
+    t_In    = 0
+    Nsteps  = 1
+    dt      = 1
+    tGap    = 1
+[../]
+
+[fixedPoint]
+    PF_max    = 10
+    tol        = 1e-4
+[../]
+
+[prec]
+    prectype                     = Ifpack # Ifpack or ML
+    displayList                  = false
+
+    [./ifpack]
+        overlap                  = 2
+
+        [./fact]
+            ilut_level-of-fill   = 1
+            drop_tolerance       = 1.e-5
+            relax_value          = 0
+
+        [../amesos]
+            solvertype           = Amesos_KLU # Amesos_KLU or Amesos_Umfpack
+
+        [../partitioner]
+            overlap              = 2
+
+        [../schwarz]
+            reordering_type      = none #metis, rcm, none
+            filter_singletons    = true
+
+        [../]
+    [../]
+[../]
+[exporter]
+    start=0
+    save=1
+    multimesh=false
+[../]

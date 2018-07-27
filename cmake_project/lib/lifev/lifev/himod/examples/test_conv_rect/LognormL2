@@ -1,0 +1,25 @@
+set y2label 'Error (relative) norm L2 log'
+set x2label 'm step log'
+set logscale x
+set logscale y
+
+# For the moment you have to set the max number of h
+plot for [i=2:5] 'Errors.dat' u 1:i title "h" w lp;
+replot	0.2/(x) 'Errors.dat' u 1 title "O(m)" w lp;
+replot	0.2/(x*x) 'Errors.dat' u 1 title "O(m^2)" w lp;
+
+
+# Some usefull stuff ------------------------------
+#!(sed -n '3,9p' Errors.dat)>file.dat;
+#'Errors.dat' u 1:3 title "h2" w lp, \
+#'Errors.dat' u 1:4 title "h3" w lp, \
+#'Errors.dat' u 1:5 title "h4" w lp, \
+#0.2/(x) 'Errors.dat' u 1 title "O(m^2)" w lp, \
+#5/x 'Errors.dat' u 1 title "O(m)" w lp;
+#plot \
+#'Errors.dat' u 1:2 title "h1" w lp, \
+#'Errors.dat' u 1:3 title "h2" w lp, \
+#'Errors.dat' u 1:4 title "h3" w lp, \
+#'Errors.dat' u 1:5 title "h4" w lp, \
+#0.2/(x) 'Errors.dat' u 1 title "O(m^2)" w lp, \
+#5/x 'Errors.dat' u 1 title "O(m)" w lp;

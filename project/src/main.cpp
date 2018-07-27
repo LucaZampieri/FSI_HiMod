@@ -50,6 +50,7 @@ int main( int argc, char* argv[] )
 
   GetPot commandLine( argc, argv );
   std::cout << "    GETTING THE DATA \n\n\n";
+  
   GetPot dataFile( "data/data" );
   if (verbose)
   {

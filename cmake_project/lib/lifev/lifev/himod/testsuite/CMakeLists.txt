@@ -1,0 +1,27 @@
+INCLUDE(TribitsAddExecutableAndTest)
+INCLUDE(AddSubdirectories)
+
+ADD_SUBDIRECTORIES(
+  1rect_ADR
+  2rect_check_basis
+  3rect_cfr_rhs
+  4rect_generaltest
+  5rect_generalconvergencetest
+  6rect_nonconst
+  1circ_ADR
+  2circ_check_basis
+  3circ_cfr_rhs
+  7circ_Stokes
+  7pipe_Stokes
+  7circ_Stokes_cone
+  7circ_Stokes_Uneducated
+  8circ_UnsteadyStokes
+  8circ_UnsteadyStokes_cone
+  8circ_UnsteadyStokes_StartingFlow
+  8circ_UnsteadyStokes_PressureGrad
+  8pipe_UnsteadyStokes
+  9circ_NavierStokes
+  9pipe_NavierStokes
+  9real_NavierStokes
+  9circ_NavierStokes_Uneducated
+)

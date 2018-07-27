@@ -1,0 +1,15 @@
+
+INCLUDE(TribitsAddExecutable)
+
+TRIBITS_ADD_EXECUTABLE(
+  OseenAssembler
+  SOURCES main.cpp
+  COMM serial mpi
+)
+
+TRIBITS_COPY_FILES_TO_BINARY_DIR(data_OseenAssembler
+  CREATE_SYMLINK
+  SOURCE_FILES data
+  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
+)
+

@@ -16,12 +16,12 @@ namespace LifeV
     M_quadruleRho( quadrho ), M_quadruleTheta( quadtheta )
     {
         // We actually do not need these, but they have to be instantiated because they are const members
-        M_xJr = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
-        M_xJtheta = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
-        M_xDr = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
-        M_xDtheta = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
-        M_xDrtheta = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
-        M_xDthetar = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
+        M_xJr       = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
+        M_xJtheta   = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
+        M_xDr       = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
+        M_xDtheta   = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
+        M_xDrtheta  = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
+        M_xDthetar  = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
         M_xJacobian = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
         M_xR = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
         M_xdR = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );

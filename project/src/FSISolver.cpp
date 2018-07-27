@@ -195,7 +195,7 @@ namespace LifeV
   }
 
   void FSISolver::setContainers3D()
-  {
+  { //TODO We could use fixed-size arrays instead of vectors
     ux.resize(udof);
     ur.resize(udof);
     utheta.resize(udof);
@@ -242,6 +242,7 @@ namespace LifeV
 
   void FSISolver::save( const Real& t, const UInt& iter ) const
   {
+
     std::ofstream solution( "output/Iteration" + std::to_string(iter) + ".txt" );
 
     /*
@@ -274,29 +275,28 @@ namespace LifeV
     {
       solution <<"x = " <<std::get<0>(grid[i][0][0]) <<"\t" <<"etar = " <<etar[i] <<std::endl;
     }
-	*/
-
-	for (UInt i = 0; i < udof; i++)
-    {
-      for (UInt j = 0; j < nQuadRho; j++)
+  	*/
+  	for (UInt i = 0; i < udof; i++)
       {
-        for (UInt k = 0; k < nQuadTheta; k++)
+        for (UInt j = 0; j < nQuadRho; j++)
         {
-          solution <<std::get<0>(cartesianGrid[i][j][k]) <<" "
-        		   <<std::get<1>(cartesianGrid[i][j][k]) <<" "
-                   <<std::get<2>(cartesianGrid[i][j][k]) <<" "
-                   <<std::get<1>(grid[i][j][k]) <<" "
-                   <<std::get<2>(grid[i][j][k]) <<" "
-                   <<ux[i][j][k] <<" "
-                   <<uy[i][j][k] <<" "
-                   <<uz[i][j][k] <<" "
-                   <<ur[i][j][k] <<" "
-                   <<utheta[i][j][k] <<" "
-                   <<p[i][j][k]  <<" "
-                   <<std::endl;
+          for (UInt k = 0; k < nQuadTheta; k++)
+          {
+            solution <<std::get<0>(cartesianGrid[i][j][k]) <<" "
+          		   <<std::get<1>(cartesianGrid[i][j][k]) <<" "
+                     <<std::get<2>(cartesianGrid[i][j][k]) <<" "
+                     <<std::get<1>(grid[i][j][k]) <<" "
+                     <<std::get<2>(grid[i][j][k]) <<" "
+                     <<ux[i][j][k] <<" "
+                     <<uy[i][j][k] <<" "
+                     <<uz[i][j][k] <<" "
+                     <<ur[i][j][k] <<" "
+                     <<utheta[i][j][k] <<" "
+                     <<p[i][j][k]  <<" "
+                     <<std::endl;
+          }
         }
       }
-    }
     for (UInt i = 0; i < udof; i++)
     {
       solution <<std::get<0>(cartesianGrid[i][0][0]) <<" "
