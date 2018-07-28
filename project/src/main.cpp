@@ -140,7 +140,7 @@ int main( int argc, char* argv[] )
   }  catch (const char* msg) {std::cerr << msg << std::endl; return 0;}
 >>>>>>> f0c8a6a31241ba36bef456d5e8a6388e92f4b045
   // Get data
-  GetPot dataFile( dataFileName );
+  GetPot dataFile( "data/data" );
   if (verbose) { std::cout <<"Definition of FSIData: "; }
   FSIData data( dataFile );
   data.printAll();
