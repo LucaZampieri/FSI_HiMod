@@ -4121,7 +4121,7 @@ void NSModalSpaceCircular::compute_r00x( const UInt& j, const vector_Type& f, co
 
 }
 
-void NSModalSpaceCircular::compute_r00r( const UInt& j, const vector_Type& f, const vector_Type& u_old, const vector_Type& urWall_old, const vector_Type& etar_old, const Real& alpha, vector_Type& R00r ) const
+void NSModalSpaceCircular::compute_r00r( const UInt& j, const vector_Type& f, const vector_Type& u_old, const vector_Type& urWall_old, const vector_Type& etar_old, const Real& alpha, const Real& rho_s, const Real& h_s, const Real& e, vector_Type& R00r ) const
 {
 
 		Real coeff1;
@@ -4166,7 +4166,7 @@ void NSModalSpaceCircular::compute_r00r( const UInt& j, const vector_Type& f, co
 							M_rphirhoWall[j][5] * normrho * M_rphitheta[j][h] * normtheta *
 							M_Theta * M_quadruleTheta->weight( h );
 				}
-				R00r[m] = ((coeff1 + coeff2)*M_map->xJacobian()[m] + (coeff3 - coeff4)*M_map->xJacobianWall()[m])
+				R00r[m] = ((coeff1 + coeff2)*M_map->xJacobian()[m] + (coeff3 - coeff4)*M_map->xJacobianWall()[m]);
 		}
 
 		R00r *= M_map->xR();
