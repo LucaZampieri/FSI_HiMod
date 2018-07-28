@@ -131,7 +131,7 @@ int main( int argc, char* argv[] )
   // Test if the dataFile exists
   try{
     file_exists(dataFileName);
-  }  catch (const char* msg) {std::cerr << msg << endl;return 0;}
+  }  catch (const char* msg) {std::cerr << msg << std::endl; return 0;}
   // Get data
   GetPot dataFile( dataFileName );
   if (verbose) { std::cout <<"Definition of FSIData: "; }
@@ -140,7 +140,7 @@ int main( int argc, char* argv[] )
 
 
   // ---------- Define Fespaces/ModalSpaceCircular  ----------
-  std::cout <<"Definition of NSModalSpaceCircular: ";
+  std::cout <<"Definition of NSModalSpaceCircular: " <<std::endl;
   boost::shared_ptr< mesh_Type > fullMeshPtr( new mesh_Type );
   regularMesh1D( *fullMeshPtr, 0, data.Nelements(), false, data.L(), 0.0 );
   // FE spaces
@@ -169,7 +169,8 @@ int main( int argc, char* argv[] )
                 const QuadratureRule* quadtheta = &quadRuleSeg32pt )
 */
 
-  ReferenceMap   refMap( Jr, Jtheta, Dr, Dtheta, Drtheta, Dthetar, Jacobian, JacobianWall, inverseRhat,
+  MapEpetra epetraMap( data.Nelements()*2+1, Comm );
+  ReferenceMap   refMap( Jr, Jtheta, Dr, Dtheta, Drtheta, Dthetar, Jacobian, JacobianWall, inverseRhat, epetraMap,
                               &quadRuleSeg32pt, &quadRuleFQSeg32pt );
   // , uSpace->map()
   //ReferenceMap refMap( uNodes, data.R(), &quadRuleSeg32pt, &quadRuleFQSeg32pt );

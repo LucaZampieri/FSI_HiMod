@@ -251,11 +251,11 @@ class ReferenceMap
 
             // Constructor for non-axisymmetric geometries
             ReferenceMap( const function_Type& jr, const function_Type& jtheta, const function_Type& dr, const function_Type& dtheta,
-                        const function_Type& drtheta, const function_Type& dthetar, const function_Type& jacobian,
+                        const function_Type& drtheta, const function_Type& dthetar, const function_Type& jacobian, const function_Type& jacobianWall,
                         const function_Type& inverseRhat, const MapEpetra& epetraMap,
                         const QuadratureRule* quadrho = &quadRuleSeg32pt, const QuadratureRule* quadtheta = &quadRuleSeg32pt ) :
                         M_functionJr( jr ), M_functionJtheta( jtheta ), M_functionDr( dr ), M_functionDtheta( dtheta ),
-                        M_functionDrtheta( drtheta ), M_functionDthetar( dthetar ), M_functionJacobian( jacobian ),
+                        M_functionDrtheta( drtheta ), M_functionDthetar( dthetar ), M_functionJacobian( jacobian ), M_functionJacobianWall( jacobianWall ),
                         M_inverseRhat( inverseRhat ),
                         M_quadruleRho( quadrho ), M_quadruleTheta( quadtheta )
                         {
@@ -266,6 +266,7 @@ class ReferenceMap
                             M_xDrtheta = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
                             M_xDthetar = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
                             M_xJacobian = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
+                            M_xJacobianWall = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
                             M_xR = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
                             M_xdR = static_cast<vector_ptrType>( new vector_Type( epetraMap, Repeated ) );
                         };
