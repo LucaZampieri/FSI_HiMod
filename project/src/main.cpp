@@ -128,7 +128,7 @@ int main( int argc, char* argv[] )
 
   // ----------  Get Data  ----------
   std::cout << "    GETTING THE DATA \n\n\n";
-  std::string dataFileName = baseDir+"data/data";
+  std::string dataFileName = baseDir+"data/data.pot";
   std::cout <<"Searching for data in :"
             <<dataFileName<<std::endl;
   // Test if the dataFile exists
@@ -191,6 +191,7 @@ int main( int argc, char* argv[] )
 
   // ---------- Create The solver and solves the problem ----------
   FSISolver solver( HM, dataFile, &refMap );
+
   solver.solve();
 
   std::cout <<"---------- THE END !!! ----------" <<std::endl;

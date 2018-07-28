@@ -612,6 +612,7 @@ addRhsFSI( const vector_ptrType& rhs, const Real& alpha, const Real& rho_s, cons
 
     }
 
+
     //Cycling on r-block
     for ( UInt k = 0; k != M_modalbasis->mr(); ++k )
     {
@@ -665,9 +666,9 @@ addRhsFSI( const vector_ptrType& rhs, const Real& alpha, const Real& rho_s, cons
         }
 
     }
-
+		
     return;
-}
+} // END addRhsFSI
 
 template< typename mesh_type, typename matrix_type, typename vector_type>
 void NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::

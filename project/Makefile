@@ -1,5 +1,5 @@
 CXX = mpicxx
-CXXFLAGS = -std=c++11# -Wall
+CXXFLAGS = -std=c++11 -Wall -g 
 
 MODULE_DIR = u/sw
 PKGS_DIR = u/sw/pkgs/toolchains/gcc-glibc/5/pkgs
