@@ -35,6 +35,8 @@
 
  */
 
+ // Search for " Luca " for part modified or added by him
+
 #ifndef __REFERENCEMAP_HPP__
 #define __REFERENCEMAP_HPP__
 
@@ -212,14 +214,28 @@ class ReferenceMap
 
             typedef boost::shared_ptr<vector_Type>               vector_ptrType;
 
-            ReferenceMap( const function_Type& jr, const function_Type& jtheta, const function_Type& dr, const function_Type& dtheta,
-                          const function_Type& drtheta, const function_Type& dthetar, const function_Type& jacobian,
+            ReferenceMap( const function_Type& jr,
+                          const function_Type& jtheta,
+                          const function_Type& dr,
+                          const function_Type& dtheta,
+                          const function_Type& drtheta,
+                          const function_Type& dthetar,
+                          const function_Type& jacobian,
+                          const function_Type& jacobianWall, // Luca
                           const function_Type& inverseRhat,
-                          const QuadratureRule* quadrho = &quadRuleSeg32pt, const QuadratureRule* quadtheta = &quadRuleSeg32pt ) :
-                        M_functionJr( jr ), M_functionJtheta( jtheta ), M_functionDr( dr ), M_functionDtheta( dtheta ),
-                        M_functionDrtheta( drtheta ), M_functionDthetar( dthetar ), M_functionJacobian( jacobian ),
+                          const QuadratureRule* quadrho = &quadRuleSeg32pt,
+                          const QuadratureRule* quadtheta = &quadRuleSeg32pt ) :
+                        M_functionJr( jr ),
+                        M_functionJtheta( jtheta ),
+                        M_functionDr( dr ),
+                        M_functionDtheta( dtheta ),
+                        M_functionDrtheta( drtheta ),
+                        M_functionDthetar( dthetar ),
+                        M_functionJacobian( jacobian ),
+                        M_functionJacobianWall( jacobianWall ), //Luca
                         M_inverseRhat( inverseRhat ),
-                        M_quadruleRho( quadrho ), M_quadruleTheta( quadtheta )
+                        M_quadruleRho( quadrho ),
+                        M_quadruleTheta( quadtheta )
                         {
                             M_xJr = vector_ptrType();
                             M_xJtheta = vector_ptrType();
@@ -228,6 +244,7 @@ class ReferenceMap
                             M_xDrtheta = vector_ptrType();
                             M_xDthetar = vector_ptrType();
                             M_xJacobian = vector_ptrType();
+                            M_xJacobianWall = vector_ptrType(); // Luca
                             M_xR = vector_ptrType();
                             M_xdR = vector_ptrType();
                         };
@@ -267,6 +284,7 @@ class ReferenceMap
                             M_xDrtheta.reset();
                             M_xDthetar.reset();
                             M_xJacobian.reset();
+                            M_xJacobianWall.reset(); // Luca
                             M_xR.reset();
                             M_xdR.reset();
             };
@@ -313,6 +331,11 @@ class ReferenceMap
                 return M_Jacobian;
             }
 
+            const MBMatrix_type JacobianWall() const //Luca
+            {
+                return M_JacobianWall;
+            }
+
             // ----------------     Axial dependence     ------------------
             const vector_Type xJr() const
             {
@@ -347,6 +370,11 @@ class ReferenceMap
             const vector_Type xJacobian() const
             {
                 return *M_xJacobian;
+            }
+
+            onst vector_Type xJacobianWall() const //Luca
+            {
+                return *M_xJacobianWall;
             }
 
             const vector_Type xR() const
@@ -397,6 +425,11 @@ class ReferenceMap
                 return M_functionJacobian;
             }
 
+            const function_Type fJacobianWall() const //Luca
+            {
+                return M_functionJacobianWall;
+            }
+
             const function_Type fJr() const
             {
                 return M_functionJr;
@@ -438,12 +471,14 @@ class ReferenceMap
             function_Type                          M_functionDrtheta;
             function_Type                          M_functionDthetar;
             function_Type                          M_functionJacobian;
+            function_Type                          M_functionJacobianWall; // Luca
 
             function_Type                          M_inverseRhat;
 
             MapFunctor                             M_Rfunctor;
             MapFunctor                             M_RhatFunctor;
             MapFunctor                             M_Jfunctor;
+            MapFunctor                             M_JfunctorWall; // Luca
 
             const QuadratureRule*                        M_quadruleRho;
             const QuadratureRule*                        M_quadruleTheta;
@@ -458,6 +493,7 @@ class ReferenceMap
             MBMatrix_type                                M_Drtheta;
             MBMatrix_type                                M_Dthetar;
             MBMatrix_type                                M_Jacobian;
+            MBMatrix_type                                M_JacobianWall; // Luca
 
             vector_ptrType                                M_xJr;
             vector_ptrType                                M_xJtheta;
@@ -466,104 +502,15 @@ class ReferenceMap
             vector_ptrType                                M_xDrtheta;
             vector_ptrType                                M_xDthetar;
             vector_ptrType                                M_xJacobian;
+            vector_ptrType                                M_xJacobianWall; // Luca
             vector_ptrType                                M_xR;
             vector_ptrType                                M_xdR;
 
 // ---------------------------- New FSI ----------------------------------------
-
+// All the section is Luca
      public:
-
-       // Typedef for the container of the computed value of the modal basis on the quadrature rule nodes
-       typedef std::vector<std::vector<std::vector<Real>>> Vector3D_type;
-
-       // Constructors for the FSI problem
-       ReferenceMap( const MBVector_type& nodes, const MBVector_type& radius, const QuadratureRule* quadrho = &quadRuleSeg32pt, const QuadratureRule* quadtheta = &quadRuleSeg32pt );
-       ReferenceMap( const MBVector_type& nodes, const Real& radius, const QuadratureRule* quadrho = &quadRuleSeg32pt, const QuadratureRule* quadtheta = &quadRuleSeg32pt );
-
-       // Retutn the 3D matrices
-       const Vector3D_type& Jr3D() const
-       {
-         return M_Jr3D;
-       }
-
-       const Vector3D_type& Jtheta3D() const
-       {
-         return M_Jtheta3D;
-       }
-
-       const Vector3D_type& Dr3D() const
-       {
-         return M_Dr3D;
-       }
-
-       const Vector3D_type& Dtheta3D() const
-       {
-         return M_Dtheta3D;
-       }
-
-       const Vector3D_type& Drtheta3D() const
-       {
-         return M_Drtheta3D;
-       }
-
-       const Vector3D_type& Dthetar3D() const
-       {
-         return M_Dthetar3D;
-       }
-
-       const Vector3D_type& Jacobian3D() const
-       {
-         return M_Jacobian3D;
-       }
-
        //! Evaluation of the map
-       void evaluateMapFSI( const Real& t );
-
-       // Set functions
-       void setRadius( const MBVector_type& radius );
-
-       // Return the vectors
-       const MBVector_type& R() const
-       {
-          return M_radius;
-       }
-
-       const MBVector_type& dR() const
-       {
-          return M_radiusPrime;
-       }
-
-       const MBVector_type& nodes() const
-       {
-          return M_nodes;
-       }
-
-     private:
-
-           // 3D Matrices
-           Vector3D_type                          M_Jr3D;
-           Vector3D_type                          M_Jtheta3D;
-           Vector3D_type                          M_Dr3D;
-           Vector3D_type                          M_Dtheta3D;
-           Vector3D_type                          M_Drtheta3D;
-           Vector3D_type                          M_Dthetar3D;
-           Vector3D_type                          M_Jacobian3D;
-
-           void setRadiusPrime();
-
-           // Vectors with values in the nodes along x
-           MBVector_type                          M_nodes;
-           MBVector_type                          M_radius;
-           MBVector_type                          M_radiusPrime;
-
-           // Number of the nodes along x
-           UInt                                   M_numbNodes;
-
-           // Helper functions
-           Real interpolateRadius ( const Real& x ) const;
-           Real interpolateRadiusPrime ( const Real& x ) const;
-
-
+       //void evaluateMapFSI( const Real& t );
 // -----------------------------------------------------------------------------
 
 };

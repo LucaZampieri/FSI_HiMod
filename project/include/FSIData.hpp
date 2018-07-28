@@ -21,23 +21,20 @@ class FSIData
     static constexpr Real PI = std::atan(1.)*4; // pi greco
     typedef std::function<Real ( const Real&, const Real&, const Real&, const Real&, const ID& )> function_Type;
     typedef std::function<Real ( const Real& )> timeFunction_Type;
+    typedef std::function<Real ( const Real& )> radiusFunction_Type;
 
     // All the functions that return the data
-
     const UInt& mx() const
-    {
-      return D_mx;
-    }
+    {return D_mx;}
+
     const UInt& mr() const
-    {
-      return D_mr;
-    }
-    const UInt& mtheta() const
-    {
+    {return D_mr;}
+
+    const UInt& mtheta() const{
       return D_mtheta;
     }
-    const UInt& mp() const
-    {
+
+    const UInt& mp() const{
       return D_mp;
     }
 
@@ -66,8 +63,7 @@ class FSIData
     {
       return D_L;
     }
-    const Real& R() const
-    {
+    const Real& R() const{
       return D_R;
     }
     const Real& rho_s() const

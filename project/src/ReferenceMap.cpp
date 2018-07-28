@@ -90,6 +90,13 @@ namespace LifeV
         M_Jfunctor.setThetaQuadRule( *M_quadruleTheta );
         M_functionJacobian = boost::bind( &MapFunctor::f, &M_Jfunctor, _1, _2, _3, _4, _5 );
 
+        // Set by Luca
+        M_JfunctorWall.setData(M_Jacobian);
+        M_JfunctorWall.setH(h);
+        M_JfunctorWall.setScaling(0);
+        M_JfunctorWall.setThetaQuadRule( *M_quadruleTheta );
+        M_functionJacobianWall = boost::bind( &MapFunctor::f, &M_JfunctorWall, _1, _2, _3, _4, _5 );
+
         /* REMARK: To initialize these functions, more functors need to be added as private members
         MapFunctor dxRfunctor( M_dxR, h );
         M_functionDxR = boost::bind( &MapFunctor::f, &dxRfunctor, _1, _2, _3, _4, _5 );
@@ -173,6 +180,7 @@ namespace LifeV
         M_Drtheta.resize( dimRho );
         M_Dthetar.resize( dimRho );
         M_Jacobian.resize( dimRho );
+        M_JacobianWall.resize( dimRho ); // Luca
 
         for( UInt i = 0; i != dimRho; ++i )
         {
@@ -183,6 +191,7 @@ namespace LifeV
             M_Drtheta[i].resize( dimTheta );
             M_Dthetar[i].resize( dimTheta );
             M_Jacobian[i].resize( dimTheta );
+            M_JacobianWall[i].resize( dimTheta ); // Luca
         }
 
         // Evaluation loops
@@ -200,6 +209,7 @@ namespace LifeV
                 M_Drtheta[i][j] = M_functionDrtheta( t, 0, rh, theta, 0 );
                 M_Dthetar[i][j] = M_functionDthetar( t, 0, rh, theta, 0 );
                 M_Jacobian[i][j] = M_functionJacobian( t, 0, rh, theta, 0 );
+                M_JacobianWall[i][j] = M_functionJacobianWall( t, 0, rh, theta, 0 ); //Luca
 
             }
         }
@@ -219,6 +229,7 @@ namespace LifeV
         M_Drtheta.resize( dof );
         M_Dthetar.resize( dof );
         M_Jacobian.resize( dof );
+        M_JacobianWall.resize( dof ); // Luca
 
         for( UInt i( 0 ); i != dof; ++ i )
         {
@@ -229,6 +240,7 @@ namespace LifeV
             M_Drtheta[i].resize( dimTheta );
             M_Dthetar[i].resize( dimTheta );
             M_Jacobian[i].resize( dimTheta );
+            M_JacobianWall[i].resize( dimTheta ); // Luca
         }
 
         UInt index(0);
@@ -258,6 +270,7 @@ namespace LifeV
                  M_Drtheta[i][j]  = M_functionDrtheta( t, vertex, 0, theta, 0 );
                  M_Dthetar[i][j]  = M_functionDthetar( t, vertex, 0, theta, 0 );
                  M_Jacobian[i][j] = M_functionJacobian( t, vertex, 0, theta, 0 );
+                 M_JacobianWall[i][j] = M_functionJacobianWall( t, vertex, 0, theta, 0 ); //Luca
             }
         }
     } // end evaluateFtensor
@@ -285,6 +298,7 @@ namespace LifeV
             (*M_xDrtheta)[i] = M_functionDrtheta( t, index * h, 0, 0, 0 );
             (*M_xDthetar)[i] = M_functionDthetar( t, index * h, 0, 0, 0 );
             (*M_xJacobian)[i] = M_functionJacobian( t, index * h, 0, 0, 0 );
+            (*M_xJacobianWall)[i] = M_functionJacobianWall( t, index * h, 0, 0, 0 );
             (*M_xR)[i] = Radius( t, index * h, 0, 0, 0 );
             (*M_xdR)[i] = dRadius( t, index * h, 0, 0, 0 );
         } // end i-for
@@ -331,6 +345,9 @@ M_nodes( nodes ), M_radius( radius ), M_numbNodes( M_nodes.size() ), M_quadruleR
                        {return 0;};
     M_functionJacobian = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& id )
                        {return (this->M_functionJr(t,x,r,theta,id)*this->M_functionJtheta(t,x,r,theta,id) - this->M_functionDrtheta(t,x,r,theta,id)*this->M_functionDthetar(t,x,r,theta,id));};
+    // TODO Luca change the following expression to how it should be
+    M_functionJacobianWall = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& id )
+                      {return (this->M_functionJr(t,x,r,theta,id)*this->M_functionJtheta(t,x,r,theta,id) - this->M_functionDrtheta(t,x,r,theta,id)*this->M_functionDthetar(t,x,r,theta,id));};
 
     // Initialization of the pointers
     M_xJr = vector_ptrType();
@@ -340,6 +357,7 @@ M_nodes( nodes ), M_radius( radius ), M_numbNodes( M_nodes.size() ), M_quadruleR
     M_xDrtheta = vector_ptrType();
     M_xDthetar = vector_ptrType();
     M_xJacobian = vector_ptrType();
+    M_xJacobianWall = vector_ptrType();
     M_xR = vector_ptrType();
     M_xdR = vector_ptrType();
 }
@@ -391,7 +409,7 @@ evaluateMapFSI( const Real& t )
     M_Dtheta3D.resize( dimX );
     M_Drtheta3D.resize( dimX );
     M_Dthetar3D.resize( dimX );
-    M_Jacobian3D.resize( dimX );
+    M_Jacobian3D.resize( dimX ); // Luca This should not be used? Done by Andrea
 
     for( UInt k = 0; k != dimX; ++k )
     {

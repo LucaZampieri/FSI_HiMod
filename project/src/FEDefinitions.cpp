@@ -4879,19 +4879,26 @@ const ReferenceFEHybrid feTetraRT0VdotNHyb ( "Hybrid RT0 elements on a tetrahedr
 
 // -------------------------------- New FSI ------------------------------------
 
-const size_t QUAD_RULE_BOUNDARY = 0;
-static const QuadraturePoint pt_boundary[ 6 ] = { QuadraturePoint ( 0.  , 0. ),
+const size_t QUAD_RULE_BOUNDARY = 0; // Id of the quadRule
+static const QuadraturePoint pt_boundary[ 6 ] = {
+                            QuadraturePoint ( 0.  , 0. ),
   													QuadraturePoint ( 0.2 , 0. ),
   													QuadraturePoint ( 0.4 , 0. ),
   													QuadraturePoint ( 0.6 , 0. ),
   													QuadraturePoint ( 0.8 , 0. ),
   													QuadraturePoint ( 1.  , 1. ) };
-const QuadratureRule quadRuleBoundary ( pt_boundary,
-                                        QUAD_RULE_BOUNDARY,
-                                        "Only the extreme point",
-                                        LINE,
-                                        6,
-                                        0 );
+//QuadratureRule ( const QuadraturePoint* pt, int id,
+//    std::string name, ReferenceShapes shape, nbQuadPt, UInt degOfExact );
+
+// This funtion is like not integrating (weight only on the end point)
+// However it is used in order to get the basis function in the last point that we later use in the modal expansion for the boundary term.
+const QuadratureRule quadRuleBoundary ( pt_boundary,         // quadrature points
+                                        QUAD_RULE_BOUNDARY,  // ID (not important here)
+                                        "QuadRule " // Name for the quadrule
+                                           +"using only the extremes point",
+                                        LINE, // Shape
+                                        6,    // Number of quadrature points
+                                        0 );  // degree of exactness
 
 // -----------------------------------------------------------------------------
 
