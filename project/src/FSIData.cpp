@@ -1,6 +1,7 @@
 #include <include/FSIData.hpp>
 
 #include <iostream>
+#include <iomanip> // for nicer output of print all
 
 namespace LifeV
 {
@@ -46,11 +47,11 @@ FSIData::FSIData( GetPot dataFile ) :
 void FSIData::printAll() const
 {
   std::cout <<"The data of the fluid structure interaction problem are:" <<std::endl;
-
-  std::cout <<"mx: " <<D_mx <<std::endl;
-  std::cout <<"mr: " <<D_mr <<std::endl;
-  std::cout <<"mtheta: " <<D_mtheta <<std::endl;
-  std::cout <<"mp: " <<D_mp <<std::endl;
+  std::cout << "Number of modes: \n";
+  std::cout << std::setw(5)  << std::left     <<"mx: "     <<D_mx;
+  std::cout << std::setw(10) << std::internal <<"mr: "     <<D_mr;
+  std::cout << std::setw(10) << std::internal <<"mtheta: " <<D_mtheta;
+  std::cout << std::setw(5)  << std::right    <<"mp: "     <<D_mp;
 
   std::cout <<"Nelements: " <<D_Nelements <<std::endl;
 
