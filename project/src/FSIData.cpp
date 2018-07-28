@@ -13,7 +13,7 @@ FSIData::FSIData( GetPot dataFile ) :
          D_mp( dataFile( "himod/mp", 8 ) ),
          D_Nelements( dataFile( "mesh/num_elements", 10 ) ),
          D_t0( dataFile( "time/t0", 0. ) ),
-         D_dt( dataFile( "time/dt", 0.01 ) ),
+         D_dt( dataFile( "time/dt", 0.1 ) ),
          D_T( dataFile( "time/T", 1. ) ),
 
          D_theta( dataFile( "fluid/structure/theta", 2*PI ) ),

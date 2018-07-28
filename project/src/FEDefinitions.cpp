@@ -4894,8 +4894,7 @@ static const QuadraturePoint pt_boundary[ 6 ] = {
 // However it is used in order to get the basis function in the last point that we later use in the modal expansion for the boundary term.
 const QuadratureRule quadRuleBoundary ( pt_boundary,         // quadrature points
                                         QUAD_RULE_BOUNDARY,  // ID (not important here)
-                                        "QuadRule " // Name for the quadrule
-                                           +"using only the extremes point",
+                                        "QuadRule using only the extremes point", // Name for the quadrule
                                         LINE, // Shape
                                         6,    // Number of quadrature points
                                         0 );  // degree of exactness

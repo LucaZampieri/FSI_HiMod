@@ -169,9 +169,9 @@ int main( int argc, char* argv[] )
                 const QuadratureRule* quadtheta = &quadRuleSeg32pt )
 */
 
-  ReferenceMap   refMap( Jr, Jtheta, Dr, Dtheta, Drtheta, Dthetar, Jacobian, JacobianWall, inverseRhat, uSpace->map(),
+  ReferenceMap   refMap( Jr, Jtheta, Dr, Dtheta, Drtheta, Dthetar, Jacobian, JacobianWall, inverseRhat,
                               &quadRuleSeg32pt, &quadRuleFQSeg32pt );
-
+  // , uSpace->map()
   //ReferenceMap refMap( uNodes, data.R(), &quadRuleSeg32pt, &quadRuleFQSeg32pt );
   // Define the Modal Basis
   boost::shared_ptr<NSModalSpaceCircular> MB( new NSModalSpaceCircular(
