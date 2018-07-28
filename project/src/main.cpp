@@ -16,6 +16,8 @@
 #include <vector>
 #include <lifev/core/fem/QuadratureRule.hpp>
 
+#include "include/poiseuille.hpp" // animalata ma rgossa
+
 #include <iostream>
 #include <stdexcept>
 
@@ -94,11 +96,30 @@ int main( int argc, char* argv[] )
       uNodes[2*i+1] = ( (uSpace->mesh()->pointList)(i+1).x() + (uSpace->mesh()->pointList)(i).x() ) / 2;
   }
   // Define the map to the reference domain
-  ReferenceMap refMap( uNodes, data.R(), &quadRuleSeg32pt, &quadRuleFQSeg32pt );
+  /*
+  onst function_Type& jr,
+                const function_Type& jtheta,
+                const function_Type& dr,
+                const function_Type& dtheta,
+                const function_Type& drtheta,
+                const function_Type& dthetar,
+                const function_Type& jacobian,
+                const function_Type& jacobianWall, // Luca
+                const function_Type& inverseRhat,
+                const QuadratureRule* quadrho = &quadRuleSeg32pt,
+                const QuadratureRule* quadtheta = &quadRuleSeg32pt )
+*/
+
+  ReferenceMap    refMap( Jr, Jtheta, Dr, Dtheta, Drtheta, Dthetar, Jacobian, JacobianWall, inverseRhat, uSpace->map(),
+                              &quadRuleSeg32pt, &quadRuleSeg64pt );
+
+  //ReferenceMap refMap( uNodes, data.R(), &quadRuleSeg32pt, &quadRuleFQSeg32pt );
   // Define the Modal Basis
   boost::shared_ptr<NSModalSpaceCircular> MB( new NSModalSpaceCircular(
-      data.R(), data.theta(), data.mx(), data.mr(), data.mtheta(), data.mp(),
+      data.Radius(), data.dRadius(), data.theta(), data.mx(), data.mr(), data.mtheta(), data.mp(),
       uNodes.size(), &refMap, &quadRuleBoundary, &(refMap.qrRho()), &(refMap.qrTheta()) ) );
+
+
   MB->evaluateBasisFSI( "Zernike", "ZernikeNatural", "Zernike", "ZernikeNatural", 0 );
 
   // Definition of NSHiModAssemblerCircular

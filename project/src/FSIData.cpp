@@ -14,7 +14,8 @@ FSIData::FSIData( GetPot dataFile ) :
          D_Nelements( dataFile( "mesh/num_elements", 10 ) ),
          D_t0( dataFile( "time/t0", 0. ) ),
          D_dt( dataFile( "time/dt", 0.01 ) ),
-          D_T( dataFile( "time/T", 1. ) ),
+         D_T( dataFile( "time/T", 1. ) ),
+
          D_theta( dataFile( "fluid/structure/theta", 2*PI ) ),
          D_L( dataFile( "fluid/structure/L", 5. ) ),
          D_R( dataFile( "fluid/structure/R", 1. ) ),
@@ -34,6 +35,9 @@ FSIData::FSIData( GetPot dataFile ) :
          D_fr_str( dataFile( "functions/fr", "0" ) ),
          D_ftheta_str( dataFile( "functions/ftheta", "0" ) ),
 
+         D_Radius_str(  dataFile( "functions/Radius" , "0" ) ),
+         D_dRadius_str( dataFile( "functions/dRadius", "0" ) ),
+
          D_ux0( muparser_function( D_ux0_str ) ),
          D_ur0( muparser_function( D_ur0_str ) ),
          D_utheta0( muparser_function( D_utheta0_str ) ),
@@ -41,7 +45,9 @@ FSIData::FSIData( GetPot dataFile ) :
          D_p2( muparser_timeFunction( D_p2_str ) ),
          D_fx( muparser_function( D_fx_str ) ),
          D_fr( muparser_function( D_fr_str ) ),
-         D_ftheta( muparser_function( D_ftheta_str ) )
+         D_ftheta(  muparser_function( D_ftheta_str ) )
+         D_Radius(  muparser_function( D_Radius_str ) )
+         D_dRadius( muparser_function( D_dRadius_str ) )
 {}
 
 void FSIData::printAll() const
@@ -58,6 +64,8 @@ void FSIData::printAll() const
   std::cout <<"t0: " <<D_t0 <<std::endl;
   std::cout <<"dt: " <<D_dt <<std::endl;
   std::cout <<"T: " <<D_T <<std::endl;
+
+  std::cout << "radius and dradius blahblahblah"<<std::endl;
 
   std::cout <<"theta: " <<D_theta <<std::endl;
   std::cout <<"L: " <<D_L <<std::endl;

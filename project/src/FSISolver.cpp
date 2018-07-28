@@ -14,23 +14,35 @@ namespace LifeV
              data( new FSIData( dataFile_ ) ),
              refMap( refMap_ ),
              uMeshSize( data->L() / (2*data->Nelements()) ),
-             udof( DataVelFESpace.numTotalDof() ), pdof( DataPressFESpace.numTotalDof() ),
-             nQuadRho( refMap->qrRho().nbQuadPt() ), nQuadTheta( refMap->qrTheta().nbQuadPt() ),
+             udof( DataVelFESpace.numTotalDof() ),
+             pdof( DataPressFESpace.numTotalDof() ),
+             nQuadRho( refMap->qrRho().nbQuadPt() ),
+             nQuadTheta( refMap->qrTheta().nbQuadPt() ),
              numbStep( static_cast<int>( round( (data->T()-data->t0())/data->dt() ) ) ),
              Comm( new Epetra_SerialComm ),
-             Map( MapEpetra( (data->mx() + data->mr() + data->mtheta()) * udof + data->mp() * pdof, Comm) ), Map_3D( MapEpetra( nQuadRho * nQuadTheta * ( 3 * udof + pdof ), Comm ) ),
-             Map_ALE( udof * nQuadRho * nQuadTheta, Comm ), Map_Wall( MapEpetra( nQuadTheta * udof, Comm ) ), Map_Eta( MapEpetra( udof, Comm ) ),
-             block_row( std::vector<UInt>( data->mx() + data->mr() + data->mtheta(), udof ) ), block_col( std::vector<UInt>( data->mx() + data->mr() + data->mtheta(), udof ) ),
-             precPtr( new prec_Type ), belosList( Teuchos::rcp ( new Teuchos::ParameterList ) ),
-             SystemMatrix( new matrix_Type( Map ) ), Rhs( new vector_Type( Map, Repeated ) ),
+             Map( MapEpetra( (data->mx() + data->mr() + data->mtheta()) * udof + data->mp() * pdof, Comm) ),
+             Map_3D( MapEpetra( nQuadRho * nQuadTheta * ( 3 * udof + pdof ), Comm ) ),
+             //Map_ALE( udof * nQuadRho * nQuadTheta, Comm ),
+             Map_Wall( MapEpetra( nQuadTheta * udof, Comm ) ),
+             Map_Eta( MapEpetra( udof, Comm ) ),
+             block_row( std::vector<UInt>( data->mx() + data->mr() + data->mtheta(), udof ) ),
+             block_col( std::vector<UInt>( data->mx() + data->mr() + data->mtheta(), udof ) ),
+             precPtr( new prec_Type ),
+             belosList( Teuchos::rcp ( new Teuchos::ParameterList ) ),
+             SystemMatrix( new matrix_Type( Map ) ),
+             Rhs( new vector_Type( Map, Repeated ) ),
              Solution( new vector_Type( Map, Unique ) ),
-             solution_3D( vector_Type( Map_3D, Unique ) ), solution_3DOld( vector_Type( Map_3D, Unique ) ),
-             urWall( vector_Type( Map_Wall, Unique ) ), urWallOld( vector_Type( Map_Wall, Unique ) ),
-             wr( vector_Type( Map_ALE, Unique ) ),
-             etar( vector_Type( Map_Eta, Unique ) ), etarOld( vector_Type( Map_Eta, Unique ) ),
+             solution_3D( vector_Type( Map_3D, Unique ) ),
+             solution_3DOld( vector_Type( Map_3D, Unique ) ),
+             urWall( vector_Type( Map_Wall, Unique ) ),
+             urWallOld( vector_Type( Map_Wall, Unique ) ),
+             //wr( vector_Type( Map_ALE, Unique ) ),
+             etar( vector_Type( Map_Eta, Unique ) ),
+             etarOld( vector_Type( Map_Eta, Unique ) ),
              exporterVtk( HiModExporterVtk( *(HM->modalspace()), uMeshSize, data->Nelements(), 1 ) )
   {
-    refMap->evaluateMapFSI( data->t0() );
+    // Define radius and dRadius in FSI DATA
+    refMap->evaluateMapFSI( data->L()/(pdof - 1) /* h */, udof, radius, dRadius);
 
     block_row.resize( data->mx() + data->mr() + data->mtheta() + data->mp(), pdof );
     block_col.resize( data->mx() + data->mr() + data->mtheta() + data->mp(), pdof );
@@ -50,7 +62,7 @@ namespace LifeV
     setGrid();
     setContainers3D();
 
-    wr *= 0;
+    //wr *= 0;
 
     etar *= 0;
     etarOld *= 0;
@@ -65,14 +77,14 @@ namespace LifeV
   {
     vector_Type f = HM->evaluateForce3DGridFSI( data->fx(), data->fr(), data->ftheta(), t, grid );
 
-    HM->addStokesProblemFSI( SystemMatrix, data->mu(), data->rho_f(), data->dt(), *refMap, t );
-    HM->addALEProblemFSI( SystemMatrix, data->rho_f(), wr, *refMap, t );
-    HM->addWallProblemFSI( SystemMatrix, data->rho_s(), data->h_s(), data->dt(), data->E(), data->csi(), data->R(), *refMap, t );
-    HM->addrhsFSI( Rhs, f, solution_3DOld, data->rho_f(), data->dt() );
-    HM->addWallrhsFSI( Rhs, urWallOld, etarOld, data->rho_s(), data->h_s(), data->dt(), data->E(), data->csi(), data->R() );
-    HM->addBCxInOutFSI( Rhs, data->p1()(t), data->p2()(t) );
-    HM->addBCrInOutFSI( SystemMatrix, Rhs );
-    HM->addBCthetaInOutFSI( SystemMatrix, Rhs );
+    HM->addStokesProblemFSI( SystemMatrix, data->nu(), data->rho_s(), data->h_s(), data->e(), *refMap, t, data->alpha());
+    //HM->addALEProblemFSI( SystemMatrix, data->rho_f(), wr, *refMap, t );
+    //HM->addWallProblemFSI( SystemMatrix, data->rho_s(), data->h_s(), data->dt(), data->E(), data->csi(), data->R(), *refMap, t );
+    HM->addRhsFSI( Rhs, data->alpha(), data->rho_s(), data->h_s(), data->e(), f, solution_3DOld, urWallOld, etarOld);
+    //HM->addWallrhsFSI( Rhs, urWallOld, etarOld, data->rho_s(), data->h_s(), data->dt(), data->E(), data->csi(), data->R() );
+    //HM->addBCxInOutFSI( Rhs, data->p1()(t), data->p2()(t) );
+    //HM->addBCrInOutFSI( SystemMatrix, Rhs );
+    HM->addBcFSI( SystemMatrix, Rhs, data->p1()(t), data->p2()(t) );
     SystemMatrix->globalAssemble();
     Rhs->globalAssemble();
 
@@ -104,6 +116,7 @@ namespace LifeV
     }
   }
 
+  /*
   void FSISolver::computeALEVelocity()
   {
     for (UInt i = 0; i < udof; i++)
@@ -113,7 +126,7 @@ namespace LifeV
           wr[coord2index(i,j,k)] = ( std::get<1>(grid[i][j][k]) - std::get<1>(gridOld[i][j][k]) ) / data->dt();
         }
   }
-
+  */ // end comment of computeALEVelocity
   void FSISolver::computeDisplacement()
   {
     Real sum;
@@ -129,6 +142,7 @@ namespace LifeV
     }
   }
 
+  /*
   void FSISolver::updateMap( const Real& t )
   {
     std::vector<Real> r( udof, data->R() );
@@ -139,7 +153,8 @@ namespace LifeV
     refMap->setRadius( r );
     refMap->evaluateMapFSI( t );
   }
-
+  */
+  /*
   void FSISolver::updateGrid()
   {
     for (UInt i = 0; i < udof; i++)
@@ -152,29 +167,30 @@ namespace LifeV
 
     setCartesianGrid();
   }
-
+  */
   void FSISolver::setGrid()
   {
-    gridOld.resize(udof);
+    //gridOld.resize(udof);
+    grid.resize(udof);
     cartesianGrid.resize(udof);
     for (UInt i = 0; i < udof; i++)
     {
-      gridOld[i].resize(nQuadRho);
+      grid[i].resize(nQuadRho);
       cartesianGrid[i].resize(nQuadRho);
       for (UInt j = 0; j < nQuadRho; j++)
       {
-        gridOld[i][j].resize(nQuadTheta);
+        grid[i][j].resize(nQuadTheta);
         cartesianGrid[i][j].resize(nQuadTheta);
         for (UInt k = 0; k < nQuadTheta; k++)
         {
-          std::get<0>(gridOld[i][j][k]) = refMap->nodes()[i];
-          std::get<1>(gridOld[i][j][k]) = refMap->qrRho().quadPointCoor(j,0) * data->R();
-          std::get<2>(gridOld[i][j][k]) = refMap->qrTheta().quadPointCoor(k,0) * data->theta();
+          std::get<0>(grid[i][j][k]) = refMap->nodes()[i];
+          std::get<1>(grid[i][j][k]) = refMap->qrRho().quadPointCoor(j,0) * data->R();
+          std::get<2>(grid[i][j][k]) = refMap->qrTheta().quadPointCoor(k,0) * data->theta();
         }
       }
     }
 
-    grid = gridOld;
+    //grid = gridOld;
     setCartesianGrid();
   }
 
@@ -232,9 +248,9 @@ namespace LifeV
       solveSystem( t );
       expandSolution();
       computeDisplacement();
-      updateGrid();
-      updateMap( t );
-      computeALEVelocity();
+      //updateGrid();
+      //updateMap( t );
+      //computeALEVelocity();
       exporterVtk.writeSolution( std::string( "output/Solution" ), solution_3D, iter, 1 );
       save( t, iter );
     }

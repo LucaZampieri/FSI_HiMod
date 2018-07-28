@@ -25,7 +25,7 @@
 
 #include <lifev/core/filter/GetPot.hpp>
 
-#include "FSIData.hpp"
+
 
 #include <lifev/core/array/MatrixEpetra.hpp>
 #include <lifev/core/array/MatrixEpetraStructured.hpp>
@@ -39,6 +39,7 @@
 #include "NSModalSpaceCircular.hpp"
 #include "NSHiModAssembler.hpp"
 #include "ReferenceMap.hpp"
+#include "FSIData.hpp"
 
 #include <lifev/himod/tools/HiModExporterVtk.hpp>
 
@@ -57,6 +58,7 @@ class FSISolver
 {
 public:
 
+  // Define some aliases
   typedef RegionMesh<LinearLine>              mesh_Type;
   typedef MatrixEpetraStructured<Real>        matrix_Type;
   typedef VectorEpetraStructured              vector_Type;
@@ -71,6 +73,7 @@ public:
   typedef std::vector<std::vector<std::vector<std::tuple<Real, Real, Real>>>> grid_type;
 
   typedef std::vector<std::vector<std::vector<Real>>> Vector3D_type;
+
 
   // Constructor
   FSISolver( const assembler_ptrType& HM_,
@@ -151,8 +154,7 @@ private:
 
   // computational grid
   grid_type grid;
-  grid_type gridOld;
-
+  //grid_type gridOld;
   grid_type cartesianGrid;
 
   // Number of quadrature points
@@ -171,7 +173,7 @@ private:
   // All the MapEpetra used
   MapEpetra Map;
   MapEpetra Map_3D;
-  MapEpetra Map_ALE;
+  //MapEpetra Map_ALE;
   MapEpetra Map_Wall;
   MapEpetra Map_Eta;
 
@@ -198,7 +200,7 @@ private:
   vector_Type urWallOld;
 
   // Radial velocity of the ALE map (assuming that the deformation is only on the radial direction wx = 0 and wtheta = 0)
-  vector_Type wr;
+  //vector_Type wr;
 
   // Radial displacement on the lateral boundary
   vector_Type etar;

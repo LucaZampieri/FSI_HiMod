@@ -59,6 +59,7 @@ class FSIData
     {
       return D_theta;
     }
+
     const Real& L() const
     {
       return D_L;
@@ -118,14 +119,38 @@ class FSIData
     {
       return D_fx;
     }
+
     const function_Type& fr() const
     {
       return D_fr;
     }
+
     const function_Type& ftheta() const
     {
       return D_ftheta;
     }
+
+    const function_Type& Radius() const
+    {
+      return D_Radius;
+    }
+
+    const function_Type& dRadius() const
+    {
+      return D_dRadius;
+    }
+
+    const Real& alpha() const
+    {
+      return 1.0 / D_dt;
+    }
+
+    const Real& e() const
+    {
+      return D_E * D_h_s / ((1 - D_csi*D_csi) * D_R*D_R) ;
+    }
+
+
 
     // Constructor
     FSIData( GetPot dataFile );
@@ -166,7 +191,10 @@ class FSIData
 
     std::string D_fx_str;       // string of the volumetric axial force
     std::string D_fr_str;       // string of the volumetric radial force
-    std::string D_ftheta_str;   // string of the volumetric angular force
+    std::string D_ftheta_str;   // string of the volumetric angular
+
+    std::string D_Radius_str;   // string of the radius
+    std::string D_dRadius_str;  // string of the derivative of the radius
 
     function_Type D_ux0;      // initial axial velocity
     function_Type D_ur0;      // initial radial velocity
@@ -178,6 +206,8 @@ class FSIData
     function_Type D_fx;       // volumetric axial force
     function_Type D_fr;       // volumetric radial force
     function_Type D_ftheta;   // volumetric angular force
+    function_Type D_Radius;   // radius (fct of x)
+    function_Type D_dRadius;  // Derivative of the radius wrt x
 
 };
 

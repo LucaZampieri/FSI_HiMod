@@ -87,6 +87,9 @@
     ur0 = 0
     utheta0 = 0
 
+    Radius  = 1
+    dRadius = 0
+
     p1 = 14000
     p2 = 13000
 
