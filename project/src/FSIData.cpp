@@ -14,6 +14,7 @@ FSIData::FSIData( GetPot dataFile ) :
          D_Nelements( dataFile( "mesh/num_elements", 10 ) ),
          D_t0( dataFile( "time/t0", 0. ) ),
          D_dt( dataFile( "time/dt", 0.1 ) ),
+         D_alpha( 1./D_dt ),
          D_T( dataFile( "time/T", 1. ) ),
 
          D_theta( dataFile( "fluid/structure/theta", 2*PI ) ),
@@ -25,6 +26,7 @@ FSIData::FSIData( GetPot dataFile ) :
          D_csi( dataFile( "fluid/structure/csi", 1. ) ),
          D_rho_f( dataFile( "fluid/physics/rho_f", 1. ) ),
          D_nu( dataFile( "fluid/physics/nu", 1. ) ),
+         D_e( D_E * D_h_s / ((1 - D_csi*D_csi) * D_R*D_R)),
 
          D_ux0_str( dataFile( "functions/ux0", "0" ) ),
          D_ur0_str( dataFile( "functions/ur0", "0" ) ),

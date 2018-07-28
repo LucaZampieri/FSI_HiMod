@@ -142,12 +142,12 @@ class FSIData
 
     const Real& alpha() const
     {
-      return 1.0 / D_dt;
+      return D_alpha;
     }
 
     const Real& e() const
     {
-      return D_E * D_h_s / ((1 - D_csi*D_csi) * D_R*D_R) ;
+      return D_e;
     }
 
 
@@ -169,6 +169,7 @@ class FSIData
 
     Real D_t0;                // initial time
     Real D_dt;                // time step
+    Real D_alpha;              // 1/dt
     Real D_T;                 // final time
 
     Real D_theta;             // 2*pigreco
@@ -178,6 +179,7 @@ class FSIData
     Real D_h_s;               // thickness of the structure
     Real D_E;                 // Young modulus
     Real D_csi;               // Poisson modulus
+    Real D_e;                   // Coefficient structure
 
     Real D_rho_f;             // density of the fluid
     Real D_nu;                // dynamical viscosity of the fluid

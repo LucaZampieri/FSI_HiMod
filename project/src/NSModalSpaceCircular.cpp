@@ -2287,7 +2287,7 @@ compute_r000xx( const UInt& k, const UInt& j, const Real& nu, const Real& alpha,
 		   	coeff2 += (	nu * M_xdphirho[k][n] * normrho * M_xphitheta[k][h] * normtheta *
 		    					M_xdphirho[j][n] * normrho * M_xphitheta[j][h] * normtheta *
 		    					M_quadruleRho->quadPointCoor( n, 0 ) *
-		    					M_quadruleRho->quadPointCoor( n, 0 ) );/*+
+		    					M_quadruleRho->quadPointCoor( n, 0 ) +
 
 		   					nu * M_xdphirho[k][n] * normrho * M_xphitheta[k][h] * normtheta *
 		    					M_xphirho[j][n] * normrho * M_xphitheta[j][h] * normtheta *
@@ -2299,12 +2299,12 @@ compute_r000xx( const UInt& k, const UInt& j, const Real& nu, const Real& alpha,
 		    					M_xphirho[j][n] * normrho * M_xdphitheta[j][h] * normtheta *
 		    					M_Theta * M_quadruleRho->weight( n ) * M_quadruleTheta->weight( h );
 
-		   	coeff4 +=	alpha *
+		   	coeff4 +=	1* //alpha *
 		   						M_xphirho[k][n] * normrho * M_xphitheta[k][h] * normtheta *
 		    					M_xphirho[j][n] * normrho * M_xphitheta[j][h] * normtheta *
 		    					M_quadruleRho->quadPointCoor( n, 0 ) *
 		    					M_quadruleRho->quadPointCoor( n, 0 ) *
-		    					M_Theta * M_quadruleRho->weight( n ) * M_quadruleTheta->weight( h );*/
+		    					M_Theta * M_quadruleRho->weight( n ) * M_quadruleTheta->weight( h );
     	} // n for-loop
     } // h for-loop
 
