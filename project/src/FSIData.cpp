@@ -7,14 +7,14 @@ namespace LifeV
 {
 
 FSIData::FSIData( GetPot dataFile ) :
-         D_mx( dataFile( "himod/mx", 10 ) ),
-         D_mr( dataFile( "himod/mr", 10 ) ),
+         D_mx(     dataFile( "himod/mx",     12 ) ),
+         D_mr(     dataFile( "himod/mr",     10 ) ),
          D_mtheta( dataFile( "himod/mtheta", 10 ) ),
-         D_mp( dataFile( "himod/mp", 8 ) ),
+         D_mp(     dataFile( "himod/mp",     8 ) ),
          D_Nelements( dataFile( "mesh/num_elements", 10 ) ),
-         D_t0( dataFile( "time/t0", 0. ) ),
-         D_dt( dataFile( "time/dt", 0.1 ) ),
-         D_T( dataFile( "time/T", 1. ) ),
+         D_t0(     dataFile( "time/t0", 0. ) ),
+         D_dt(     dataFile( "time/dt", 0.1 ) ),
+         D_T(      dataFile( "time/T",  1. ) ),
 
          D_theta( dataFile( "fluid/structure/theta", 2*PI ) ),
          D_L( dataFile( "fluid/structure/L", 5. ) ),
@@ -33,7 +33,7 @@ FSIData::FSIData( GetPot dataFile ) :
          D_p2_str( dataFile( "functions/p2", "0" ) ),
          D_fx_str( dataFile( "functions/fx", "0" ) ),
          D_fr_str( dataFile( "functions/fr", "0" ) ),
-         D_ftheta_str( dataFile( "functions/ftheta", "0" ) ),
+         D_ftheta_str(  dataFile( "functions/ftheta", "0" ) ),
          D_Radius_str(  dataFile( "functions/Radius" , "0" ) ),
          D_dRadius_str( dataFile( "functions/dRadius", "0" ) ),
 
@@ -47,7 +47,9 @@ FSIData::FSIData( GetPot dataFile ) :
          D_ftheta(  muparser_function( D_ftheta_str ) ),
          D_Radius(  muparser_function( D_Radius_str ) ),
          D_dRadius( muparser_function( D_dRadius_str ) )
-{}
+{
+  std::cout << "Constructed FSI DATA!\n";
+}
 
 void FSIData::printAll() const
 {
