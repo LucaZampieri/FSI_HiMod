@@ -40,6 +40,9 @@ inline void file_exists (const std::string& name) {
     if (!f.good()){
       throw "The file cannot be found! \nInterupting the program";
     }
+    else{
+      std::cout << "data found!" << std::endl;
+    }
 }
 
 // -----------------------   data from poiseuille
@@ -133,7 +136,7 @@ int main( int argc, char* argv[] )
     file_exists(dataFileName);
   }  catch (const char* msg) {std::cerr << msg << std::endl; return 0;}
   // Get data
-  GetPot dataFile( "data/data" );
+  GetPot dataFile( dataFileName );
   if (verbose) { std::cout <<"Definition of FSIData: "; }
   FSIData data( dataFile );
   data.printAll();
