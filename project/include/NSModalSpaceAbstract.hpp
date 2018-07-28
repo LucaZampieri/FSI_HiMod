@@ -115,7 +115,7 @@ public:
     {
         return M_mx;
     }
-
+    
     const UInt mr() const
     {
         return M_mr;

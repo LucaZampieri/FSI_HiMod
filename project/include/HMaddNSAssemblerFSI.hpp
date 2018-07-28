@@ -1,15 +1,12 @@
 #ifndef __HMAADDNSASSEMBLERFSI_HPP__
 #define __HMAADDNSASSEMBLERFSI_HPP__
 
-/*
-    Assemble the matrix of the problem, for the moment with x- dependent radius
-*/
 template< typename mesh_type, typename matrix_type, typename vector_type>
 void NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::
-addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const Real& rho_f, const Real& dt, ReferenceMap& refMap, const Real& t )
+addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& nu, const Real& rho_s, const Real& h_s, const Real& e, ReferenceMap& refMap, const Real& t, const Real& alpha )
 {
 
-	  DOF DatauFESpace( M_velocityFespace->dof() );
+	DOF DatauFESpace( M_velocityFespace->dof() );
     UInt ndofuFE = DatauFESpace.numTotalDof();
     DOF DatapFESpace( M_pressureFespace->dof() );
     UInt ndofpFE = DatapFESpace.numTotalDof();
@@ -43,12 +40,12 @@ addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const R
             vector_ptrType R101xx( new vector_type( M_velocityFespace->map(), Repeated ) );
             vector_ptrType R110xx( new vector_type( M_velocityFespace->map(), Repeated ) );
 
-            M_modalbasis->computeFSI_r000xx( k, j, mu, rho_f, dt, *R000xx );
-            M_modalbasis->computeFSI_r001xx( k, j, mu, *R001xx );
-            M_modalbasis->computeFSI_r010xx( k, j, mu, *R010xx );
-            M_modalbasis->computeFSI_r100xx( k, j, mu, *R100xx );
-            M_modalbasis->computeFSI_r101xx( k, j, mu, *R101xx );
-            M_modalbasis->computeFSI_r110xx( k, j, mu, *R110xx );
+            M_modalbasis->compute_r000xx( k, j, nu, alpha, *R000xx );
+            M_modalbasis->compute_r001xx( k, j, nu, *R001xx );
+            M_modalbasis->compute_r010xx( k, j, nu, *R010xx );
+            M_modalbasis->compute_r100xx( k, j, nu, *R100xx );
+            M_modalbasis->compute_r101xx( k, j, nu, *R101xx );
+            M_modalbasis->compute_r110xx( k, j, nu, *R110xx );
 
             //Assemble the (j,k)1D FEMproblem
             {
@@ -90,12 +87,12 @@ addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const R
             vector_ptrType R101rr( new vector_type( M_velocityFespace->map(), Repeated ) );
             vector_ptrType R110rr( new vector_type( M_velocityFespace->map(), Repeated ) );
 
-            M_modalbasis->computeFSI_r000rr( k, j, mu, rho_f, dt, *R000rr );
-            M_modalbasis->computeFSI_r001rr( k, j, mu, *R001rr );
-            M_modalbasis->computeFSI_r010rr( k, j, mu, *R010rr );
-            M_modalbasis->computeFSI_r100rr( k, j, mu, *R100rr );
-            M_modalbasis->computeFSI_r101rr( k, j, mu, *R101rr );
-            M_modalbasis->computeFSI_r110rr( k, j, mu, *R110rr );
+            M_modalbasis->compute_r000rr( k, j, nu, alpha, rho_s, h_s, e, *R000rr );
+            M_modalbasis->compute_r001rr( k, j, nu, *R001rr );
+            M_modalbasis->compute_r010rr( k, j, nu, *R010rr );
+            M_modalbasis->compute_r100rr( k, j, nu, *R100rr );
+            M_modalbasis->compute_r101rr( k, j, nu, *R101rr );
+            M_modalbasis->compute_r110rr( k, j, nu, *R110rr );
 
 			{
                 using namespace ExpressionAssembly;
@@ -137,12 +134,12 @@ addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const R
             vector_ptrType R101tt( new vector_type( M_velocityFespace->map(), Repeated ) );
             vector_ptrType R110tt( new vector_type( M_velocityFespace->map(), Repeated ) );
 
-            M_modalbasis->computeFSI_r000tt( k, j, mu, rho_f, dt, *R000tt );
-            M_modalbasis->computeFSI_r001tt( k, j, mu, *R001tt );
-            M_modalbasis->computeFSI_r010tt( k, j, mu, *R010tt );
-            M_modalbasis->computeFSI_r100tt( k, j, mu, *R100tt );
-            M_modalbasis->computeFSI_r101tt( k, j, mu, *R101tt );
-            M_modalbasis->computeFSI_r110tt( k, j, mu, *R110tt );
+            M_modalbasis->compute_r000tt( k, j, nu, alpha, *R000tt );
+            M_modalbasis->compute_r001tt( k, j, nu, *R001tt );
+            M_modalbasis->compute_r010tt( k, j, nu, *R010tt );
+            M_modalbasis->compute_r100tt( k, j, nu, *R100tt );
+            M_modalbasis->compute_r101tt( k, j, nu, *R101tt );
+            M_modalbasis->compute_r110tt( k, j, nu, *R110tt );
 
 			{
                 using namespace ExpressionAssembly;
@@ -182,9 +179,9 @@ addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const R
             vector_ptrType R010xr( new vector_type( M_velocityFespace->map(), Repeated ) );
 
 
-            M_modalbasis->computeFSI_r000xr( k, j, mu, *R000xr );
-            M_modalbasis->computeFSI_r001xr( k, j, mu, *R001xr );
-            M_modalbasis->computeFSI_r010xr( k, j, mu, *R010xr );
+            M_modalbasis->compute_r000xr( k, j, nu, *R000xr );
+            M_modalbasis->compute_r001xr( k, j, nu, *R001xr );
+            M_modalbasis->compute_r010xr( k, j, nu, *R010xr );
 
 			{
                 using namespace ExpressionAssembly;
@@ -220,9 +217,9 @@ addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const R
             vector_ptrType R001xt( new vector_type( M_velocityFespace->map(), Repeated ) );
             vector_ptrType R010xt( new vector_type( M_velocityFespace->map(), Repeated ) );
 
-            M_modalbasis->computeFSI_r000xt( k, j, mu, *R000xt );
-            M_modalbasis->computeFSI_r001xt( k, j, mu, *R001xt );
-            M_modalbasis->computeFSI_r010xt( k, j, mu, *R010xt );
+            M_modalbasis->compute_r000xt( k, j, nu, *R000xt );
+            M_modalbasis->compute_r001xt( k, j, nu, *R001xt );
+            M_modalbasis->compute_r010xt( k, j, nu, *R010xt );
 
 			{
                 using namespace ExpressionAssembly;
@@ -255,8 +252,8 @@ addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const R
             vector_ptrType R000rx( new vector_type( M_velocityFespace->map(), Repeated ) );
             vector_ptrType R100rx( new vector_type( M_velocityFespace->map(), Repeated ) );
 
-            M_modalbasis->computeFSI_r000rx( k, j, mu, *R000rx );
-            M_modalbasis->computeFSI_r100rx( k, j, mu, *R100rx );
+            M_modalbasis->compute_r000rx( k, j, nu, *R000rx );
+            M_modalbasis->compute_r100rx( k, j, nu, *R100rx );
 
 			{
                 using namespace ExpressionAssembly;
@@ -287,7 +284,7 @@ addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const R
 
             vector_ptrType R000rt( new vector_type( M_velocityFespace->map(), Repeated ) );
 
-            M_modalbasis->computeFSI_r000rt( k, j, mu, *R000rt );
+            M_modalbasis->compute_r000rt( k, j, nu, *R000rt );
 
 			{
                 using namespace ExpressionAssembly;
@@ -318,8 +315,8 @@ addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const R
             vector_ptrType R000tx( new vector_type( M_velocityFespace->map(), Repeated ) );
             vector_ptrType R100tx( new vector_type( M_velocityFespace->map(), Repeated ) );
 
-            M_modalbasis->computeFSI_r000tx( k, j, mu, *R000tx );
-            M_modalbasis->computeFSI_r100tx( k, j, mu, *R100tx );
+            M_modalbasis->compute_r000tx( k, j, nu, *R000tx );
+            M_modalbasis->compute_r100tx( k, j, nu, *R100tx );
 
 			{
                 using namespace ExpressionAssembly;
@@ -350,7 +347,7 @@ addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const R
 
             vector_ptrType R000tr( new vector_type( M_velocityFespace->map(), Repeated ) );
 
-            M_modalbasis->computeFSI_r000tr( k, j, mu, *R000tr );
+            M_modalbasis->compute_r000tr( k, j, nu, *R000tr );
 
 			{
                 using namespace ExpressionAssembly;
@@ -381,9 +378,9 @@ addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const R
             vector_ptrType R001px( new vector_type( M_velocityFespace->map(), Repeated ) );
             vector_ptrType R010px( new vector_type( M_velocityFespace->map(), Repeated ) );
 
-            M_modalbasis->computeFSI_r000px( k, j, *R000px );
-            M_modalbasis->computeFSI_r001px( k, j, *R001px );
-            M_modalbasis->computeFSI_r010px( k, j, *R010px );
+            M_modalbasis->compute_r000px( k, j, *R000px );
+            M_modalbasis->compute_r001px( k, j, *R001px );
+            M_modalbasis->compute_r010px( k, j, *R010px );
 
             {
                 using namespace ExpressionAssembly;
@@ -415,7 +412,7 @@ addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const R
 
             vector_ptrType R000pr( new vector_type( M_velocityFespace->map(), Repeated ) );
 
-            M_modalbasis->computeFSI_r000pr( k, j, *R000pr );
+            M_modalbasis->compute_r000pr( k, j, *R000pr );
 
 			{
                 using namespace ExpressionAssembly;
@@ -445,7 +442,7 @@ addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const R
 
             vector_ptrType R000pt( new vector_type( M_velocityFespace->map(), Repeated ) );
 
-            M_modalbasis->computeFSI_r000pt( k, j, *R000pt );
+            M_modalbasis->compute_r000pt( k, j, *R000pt );
 
 			{
                 using namespace ExpressionAssembly;
@@ -477,8 +474,8 @@ addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const R
             vector_ptrType R000xp( new vector_type( M_velocityFespace->map(), Repeated ) );
             vector_ptrType R100xp( new vector_type( M_velocityFespace->map(), Repeated ) );
 
-            M_modalbasis->computeFSI_r000xp( k, j, *R000xp );
-            M_modalbasis->computeFSI_r100xp( k, j, *R100xp );
+            M_modalbasis->compute_r000xp( k, j, *R000xp );
+            M_modalbasis->compute_r100xp( k, j, *R100xp );
 
 			{
                 using namespace ExpressionAssembly;
@@ -509,7 +506,7 @@ addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const R
 
             vector_ptrType R000rp( new vector_type( M_velocityFespace->map(), Repeated ) );
 
-            M_modalbasis->computeFSI_r000rp( k, j, *R000rp );
+            M_modalbasis->compute_r000rp( k, j, *R000rp );
 
 			{
                 using namespace ExpressionAssembly;
@@ -540,7 +537,7 @@ addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const R
 
             vector_ptrType R000tp( new vector_type( M_velocityFespace->map(), Repeated ) );
 
-            M_modalbasis->computeFSI_r000tp( k, j, *R000tp );
+            M_modalbasis->compute_r000tp( k, j, *R000tp );
 
 			{
                 using namespace ExpressionAssembly;
@@ -592,395 +589,15 @@ addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const R
     return;
 }
 
-//------------------- Parte relativa alla velocità ALE -------------------------
-
 template< typename mesh_type, typename matrix_type, typename vector_type>
 void NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::
-addALEProblemFSI( const matrix_ptrType& systemMatrix, const Real& rho_f, const vector_type& wr, ReferenceMap& refMap, const Real& t )
-{
-	DOF DatauFESpace( M_velocityFespace->dof() );
-		UInt ndofuFE = DatauFESpace.numTotalDof();
-		DOF DatapFESpace( M_pressureFespace->dof() );
-		UInt ndofpFE = DatapFESpace.numTotalDof();
-
-		std::vector<Real> Reval( ndofuFE );
-		std::vector<Real> dReval( ndofuFE );
-
-		QuadratureRule interpQuad;
-		interpQuad.setDimensionShape( shapeDimension( M_velocityFespace->refFEPtr()->shape() ), M_velocityFespace->refFEPtr()->shape() );
-		interpQuad.setPoints( M_velocityFespace->refFEPtr()->refCoor(), std::vector<Real> ( M_velocityFespace->refFEPtr()->nbDof(), 0 ) );
-		CurrentFE interpCFE( *( M_velocityFespace->refFEPtr() ), getGeometricMap( *( M_velocityFespace->mesh() ) ), interpQuad );
-		interpCFE.update( M_velocityFespace->mesh()->element (0), UPDATE_QUAD_NODES );
-
-		Real h   = ( interpCFE.quadNode( 1, 0 ) - interpCFE.quadNode( 0, 0 ) ) / 2;
-
-		// Evaluate the reference map and the radius along the mainstream
-		// M_modalbasis->map()->evaluateAxialMap( h, ndofuFE, M_modalbasis->fRho(), M_modalbasis->fdRho(), M_velocityFespace->map() );
-/*
-		// xx-block
-		for ( UInt j = 0; j != M_modalbasis->mx(); ++j )
-		{
-				for ( UInt k = 0; k != M_modalbasis->mx(); ++k )
-				{
-						//j refers to the test function, k refers to the solution
-						//For each blocks compute the integral coefficient on the slice
-
-						vector_ptrType W000xx( new vector_type( M_velocityFespace->map(), Repeated ) );
-						vector_ptrType W100xx( new vector_type( M_velocityFespace->map(), Repeated ) );
-
-						M_modalbasis->computeFSI_w000xx( k, j, wx, rho_f, *W000xx );
-						M_modalbasis->computeFSI_w100xx( k, j, wx, rho_f, *W100xx );
-
-						//Assemble the (j,k)1D FEMproblem
-						{
-								using namespace ExpressionAssembly;
-
-								VectorSmall<1> oneVector;
-								oneVector[0] = 1.0;
-
-								integrate( elements( M_etufespace->mesh() ),
-													 M_velocityFespace->qr(),
-													 M_etufespace,
-													 M_etufespace,
-
-														value( M_etufespace, *W000xx ) * phi_i * phi_j +
-														+ value( M_etufespace, *W100xx ) * dot( grad( phi_j ), value( oneVector ) ) * phi_i
-
-													)
-											 >> ( systemMatrix->block( j, k ) );
-						}
-				}
-		}
-*/
-	// rr-block
-		for ( UInt j = 0; j != M_modalbasis->mr(); ++j )
-		{
-				for ( UInt k = 0; k != M_modalbasis->mr(); ++k )
-				{
-						//j refers to the test function, k refers to the solution
-
-						//For each blocks compute the integral coefficient on the slice
-						vector_ptrType W000rr( new vector_type( M_velocityFespace->map(), Repeated ) );
-
-						M_modalbasis->computeFSI_w000rr( k, j, wr, rho_f, *W000rr );
-
-			{
-								using namespace ExpressionAssembly;
-
-								VectorSmall<1> oneVector;
-								oneVector[0] = 1.0;
-
-								integrate( elements( M_etufespace->mesh() ),
-													 M_velocityFespace->qr(),
-													 M_etufespace,
-													 M_etufespace,
-
-														value( M_etufespace, *W000rr ) * phi_i * phi_j
-
-													)
-											 >> ( systemMatrix->block( M_modalbasis->mx() + j, M_modalbasis->mx() + k ) );
-						}
-				}
-		}
-
-		// tt-block
-		for ( UInt j = 0; j != M_modalbasis->mtheta(); ++j )
-		{
-				for ( UInt k = 0; k != M_modalbasis->mtheta(); ++k )
-				{
-						//j refers to the test function, k refers to the solution
-
-						//For each blocks compute the integral coefficient on the slice
-
-						vector_ptrType W000tt( new vector_type( M_velocityFespace->map(), Repeated ) );
-
-						M_modalbasis->computeFSI_w000tt( k, j, wr/*, wtheta*/, rho_f, *W000tt );
-
-			{
-								using namespace ExpressionAssembly;
-
-								VectorSmall<1> oneVector;
-								oneVector[0] = 1.0;
-
-								integrate( elements( M_etufespace->mesh() ),
-													 M_velocityFespace->qr(),
-													 M_etufespace,
-													 M_etufespace,
-
-														value( M_etufespace, *W000tt ) * phi_i * phi_j
-
-													)
-											 >> ( systemMatrix->block( M_modalbasis->mx() + M_modalbasis->mr() + j, M_modalbasis->mx() + M_modalbasis->mr() + k ) );
-						}
-				}
-		}
-/*
-		// xr-block
-		for ( UInt j = 0; j != M_modalbasis->mr(); ++j )
-		{
-				for ( UInt k = 0; k != M_modalbasis->mx(); ++k )
-				{
-						//j refers to the test function, k refers to the solution
-
-						//For each blocks compute the integral coefficient on the slice
-
-						vector_ptrType W000xr( new vector_type( M_velocityFespace->map(), Repeated ) );
-
-						M_modalbasis->computeFSI_w000xr( k, j, wx, rho_f, *W000xr );
-
-			{
-								using namespace ExpressionAssembly;
-
-								VectorSmall<1> oneVector;
-								oneVector[0] = 1.0;
-
-								integrate( elements( M_etufespace->mesh() ),
-													 M_velocityFespace->qr(),
-													 M_etufespace,
-													 M_etufespace,
-
-														value( M_etufespace, *W000xr ) * phi_i * phi_j
-
-													)
-											 >> ( systemMatrix->block( M_modalbasis->mx() + j, k ) );
-						}
-				}
-		}
-*/
-/*
-		// xt-block
-		for ( UInt j = 0; j != M_modalbasis->mtheta(); ++j )
-		{
-				for ( UInt k = 0; k != M_modalbasis->mx(); ++k )
-				{
-						//j refers to the test function, k refers to the solution
-
-						//For each blocks compute the integral coefficient on the slice
-
-						vector_ptrType W000xt( new vector_type( M_velocityFespace->map(), Repeated ) );
-
-						M_modalbasis->computeFSI_w000xt( k, j, wx, rho_f, *W000xt );
-
-			{
-								using namespace ExpressionAssembly;
-
-								VectorSmall<1> oneVector;
-								oneVector[0] = 1.0;
-
-								integrate( elements( M_etufespace->mesh() ),
-													 M_velocityFespace->qr(),
-													 M_etufespace,
-													 M_etufespace,
-
-														value( M_etufespace, *W000xt ) * phi_i * phi_j
-
-													)
-											 >> ( systemMatrix->block( M_modalbasis->mx() + M_modalbasis->mr() + j, k ) );
-						}
-				}
-		}
-*/
-		// rx-block
-		for ( UInt j = 0; j != M_modalbasis->mx(); ++j )
-		{
-				for ( UInt k = 0; k != M_modalbasis->mr(); ++k )
-				{
-						//j refers to the test function, k refers to the solution
-
-						vector_ptrType W000rx( new vector_type( M_velocityFespace->map(), Repeated ) );
-						vector_ptrType W100rx( new vector_type( M_velocityFespace->map(), Repeated ) );
-
-						M_modalbasis->computeFSI_w000rx( k, j, wr, rho_f, *W000rx );
-						M_modalbasis->computeFSI_w100rx( k, j, wr, rho_f, *W100rx );
-
-			{
-								using namespace ExpressionAssembly;
-
-								VectorSmall<1> oneVector;
-								oneVector[0] = 1.0;
-
-								integrate( elements( M_etufespace->mesh() ),
-													 M_velocityFespace->qr(),
-													 M_etufespace,
-													 M_etufespace,
-
-														value( M_etufespace, *W000rx ) * phi_i * phi_j
-														+ value( M_etufespace, *W100rx ) * phi_i * dot( grad( phi_j ), value( oneVector ) )
-
-													)
-											 >> ( systemMatrix->block( j, M_modalbasis->mx() + k ) );
-						}
-				}
-		}
-
-		// rt-block
-		for ( UInt j = 0; j != M_modalbasis->mtheta(); ++j )
-		{
-				for ( UInt k = 0; k != M_modalbasis->mr(); ++k )
-				{
-						//j refers to the test function, k refers to the solution
-
-						vector_ptrType W000rt( new vector_type( M_velocityFespace->map(), Repeated ) );
-
-						M_modalbasis->computeFSI_w000rt( k, j, wr/*, wtheta*/, rho_f, *W000rt );
-
-			{
-								using namespace ExpressionAssembly;
-
-								VectorSmall<1> oneVector;
-								oneVector[0] = 1.0;
-
-								integrate( elements( M_etufespace->mesh() ),
-													 M_velocityFespace->qr(),
-													 M_etufespace,
-													 M_etufespace,
-
-													 value( M_etufespace, *W000rt ) * phi_i * phi_j
-
-													)
-											 >> ( systemMatrix->block( M_modalbasis->mx() + M_modalbasis->mr() + j, M_modalbasis->mx() + k ) );
-						}
-				}
-		}
-/*
-		// tx-block
-		for ( UInt j = 0; j != M_modalbasis->mx(); ++j )
-		{
-				for ( UInt k = 0; k != M_modalbasis->mtheta(); ++k )
-				{
-						//j refers to the test function, k refers to the solution
-
-						vector_ptrType W000tx( new vector_type( M_velocityFespace->map(), Repeated ) );
-						vector_ptrType W100tx( new vector_type( M_velocityFespace->map(), Repeated ) );
-
-						M_modalbasis->computeFSI_w000tx( k, j, wtheta, rho_f, *W000tx );
-						M_modalbasis->computeFSI_w100tx( k, j, wtheta, rho_f, *W100tx );
-
-			{
-								using namespace ExpressionAssembly;
-
-								VectorSmall<1> oneVector;
-								oneVector[0] = 1.0;
-
-								integrate( elements( M_etufespace->mesh() ),
-													 M_velocityFespace->qr(),
-													 M_etufespace,
-													 M_etufespace,
-
-														value( M_etufespace, *W000tx ) * phi_i * phi_j
-														+ value( M_etufespace, *W100tx ) * phi_i * dot( grad( phi_j ), value( oneVector ) )
-
-													)
-											 >> ( systemMatrix->block( j, M_modalbasis->mx() + M_modalbasis->mr() + k ) );
-						}
-				}
-		}
-*/
-/*
-		// tr-block
-		for ( UInt j = 0; j != M_modalbasis->mr(); ++j )
-		{
-				for ( UInt k = 0; k != M_modalbasis->mtheta(); ++k )
-				{
-						//j refers to the test function, k refers to the solution
-
-						vector_ptrType W000tr( new vector_type( M_velocityFespace->map(), Repeated ) );
-
-						M_modalbasis->computeFSI_w000tr( k, j, wtheta, rho_f, *W000tr );
-
-			{
-								using namespace ExpressionAssembly;
-
-								VectorSmall<1> oneVector;
-								oneVector[0] = 1.0;
-
-								integrate( elements( M_etufespace->mesh() ),
-													 M_velocityFespace->qr(),
-													 M_etufespace,
-													 M_etufespace,
-
-													 value( M_etufespace, *W000tr ) * phi_i * phi_j
-
-													)
-											 >> ( systemMatrix->block( M_modalbasis->mx() + j, M_modalbasis->mx() + M_modalbasis->mr() + k ) );
-						}
-				}
-		}
-*/
-		return;
-}
-
-//------------------------------------------------------------------------------
-
-//---------------- Parte relativa all'integrale di bordo laterale --------------
-
-template< typename mesh_type, typename matrix_type, typename vector_type>
-void NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::
-addWallProblemFSI( const matrix_ptrType& systemMatrix, const Real& rho_s, const Real& h_s, const Real& dt, const Real& E, const Real& csi, const Real& R0, ReferenceMap& refMap, const Real& t )
-{
-	  DOF DatauFESpace( M_velocityFespace->dof() );
-		UInt ndofuFE = DatauFESpace.numTotalDof();
-		DOF DatapFESpace( M_pressureFespace->dof() );
-		UInt ndofpFE = DatapFESpace.numTotalDof();
-
-		std::vector<Real> Reval( ndofuFE );
-		std::vector<Real> dReval( ndofuFE );
-
-		QuadratureRule interpQuad;
-		interpQuad.setDimensionShape( shapeDimension( M_velocityFespace->refFEPtr()->shape() ), M_velocityFespace->refFEPtr()->shape() );
-		interpQuad.setPoints( M_velocityFespace->refFEPtr()->refCoor(), std::vector<Real> ( M_velocityFespace->refFEPtr()->nbDof(), 0 ) );
-		CurrentFE interpCFE( *( M_velocityFespace->refFEPtr() ), getGeometricMap( *( M_velocityFespace->mesh() ) ), interpQuad );
-		interpCFE.update( M_velocityFespace->mesh()->element (0), UPDATE_QUAD_NODES );
-
-		Real h   = ( interpCFE.quadNode( 1, 0 ) - interpCFE.quadNode( 0, 0 ) ) / 2;
-
-		// rr-block
-	    for ( UInt j = 0; j != M_modalbasis->mr(); ++j )
-	    {
-	        for ( UInt k = 0; k != M_modalbasis->mr(); ++k )
-	        {
-	            //j refers to the test function, k refers to the solution
-
-	            //For each blocks compute the integral coefficient on the slice
-	            vector_ptrType B000rr( new vector_type( M_velocityFespace->map(), Repeated ) );
-
-	            M_modalbasis->computeFSI_b000rr( k, j, rho_s, h_s, dt, E, csi, R0, *B000rr );
-
-				{
-	                using namespace ExpressionAssembly;
-
-	                VectorSmall<1> oneVector;
-	                oneVector[0] = 1.0;
-
-	                integrate( elements( M_etufespace->mesh() ),
-	                           M_velocityFespace->qr(),
-	                           M_etufespace,
-	                           M_etufespace,
-
-	                            value( M_etufespace, *B000rr ) * phi_i * phi_j
-
-	                          )
-		                     >> ( systemMatrix->block( M_modalbasis->mx() + j, M_modalbasis->mx() + k ) );
-	            }
-	        }
-	    }
-
-			return;
-}
-
-//------------------------------------------------------------------------------
-
-//---------------- Parte relativa all'integrale di volume del rhs --------------
-
-template< typename mesh_type, typename matrix_type, typename vector_type>
-void NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::
-addrhsFSI( const vector_ptrType& rhs, const vector_type& f, const vector_type& u_old, const Real& rho_f, const Real& dt )
+addRhsFSI( const vector_ptrType& rhs, const Real& alpha, const Real& rho_s, const Real& h_s, const Real& e, const vector_Type& f, const vector_Type& u_old, const vector_Type& urWall_old, const vector_Type& etar_old )
 {
     //Cycling on x-block
     for ( UInt k = 0; k != M_modalbasis->mx(); ++k )
     {
-        vector_ptrType F00x( new vector_type( M_velocityFespace->map(), Repeated ) );
-        M_modalbasis->computeFSI_f00x( k, f, u_old, rho_f, dt, *F00x );
+        vector_ptrType r00x( new vector_type( M_velocityFespace->map(), Repeated ) );
+        M_modalbasis->compute_r00x( k, f, u_old, ualpha, *r00x );
 
         {
             using namespace ExpressionAssembly;
@@ -988,7 +605,7 @@ addrhsFSI( const vector_ptrType& rhs, const vector_type& f, const vector_type& u
             integrate ( elements( M_etufespace->mesh() ),
                         M_velocityFespace->qr(),
                         M_etufespace,
-                        value( M_etufespace, *F00x ) * phi_i
+                        value( M_etufespace, *r00x ) * phi_i
                       )
                     >> ( rhs->block( k ) );
         }
@@ -998,8 +615,8 @@ addrhsFSI( const vector_ptrType& rhs, const vector_type& f, const vector_type& u
     //Cycling on r-block
     for ( UInt k = 0; k != M_modalbasis->mr(); ++k )
     {
-        vector_ptrType F00r( new vector_type( M_velocityFespace->map(), Repeated ) );
-        M_modalbasis->computeFSI_f00r( k, f, u_old, rho_f, dt, *F00r );
+        vector_ptrType r00r( new vector_type( M_velocityFespace->map(), Repeated ) );
+        M_modalbasis->compute_r00r( k, f, u_old, urWall_old, etar_old, alpha, rho_s, h_s, e, *r00r );
 
         {
             using namespace ExpressionAssembly;
@@ -1007,7 +624,7 @@ addrhsFSI( const vector_ptrType& rhs, const vector_type& f, const vector_type& u
             integrate ( elements( M_etufespace->mesh() ),
                         M_velocityFespace->qr(),
                         M_etufespace,
-                        value( M_etufespace, *F00r ) * phi_i
+                        value( M_etufespace, *r00r ) * phi_i
                       )
                     >> ( rhs->block( M_modalbasis->mx() + k ) );
         }
@@ -1017,8 +634,8 @@ addrhsFSI( const vector_ptrType& rhs, const vector_type& f, const vector_type& u
     //Cycling on theta-block
     for ( UInt k = 0; k != M_modalbasis->mtheta(); ++k )
     {
-        vector_ptrType F00t( new vector_type( M_velocityFespace->map(), Repeated ) );
-        M_modalbasis->computeFSI_f00t( k, f, u_old, rho_f, dt, *F00t );
+        vector_ptrType r00t( new vector_type( M_velocityFespace->map(), Repeated ) );
+        M_modalbasis->compute_r00t( k, f, u_old, alpha, *r00t );
 
         {
             using namespace ExpressionAssembly;
@@ -1026,7 +643,7 @@ addrhsFSI( const vector_ptrType& rhs, const vector_type& f, const vector_type& u
             integrate ( elements( M_etufespace->mesh() ),
                         M_velocityFespace->qr(),
                         M_etufespace,
-                        value( M_etufespace, *F00t ) * phi_i
+                        value( M_etufespace, *r00t ) * phi_i
                       )
                     >> ( rhs->block( M_modalbasis->mx() + M_modalbasis->mr() + k ) );
         }
@@ -1034,13 +651,13 @@ addrhsFSI( const vector_ptrType& rhs, const vector_type& f, const vector_type& u
     }
 
     //Cycling on p-block : null force
-    for ( UInt k = 0; k != M_modalbasis->mp(); ++k )
+    for ( UInt k = 0; k != M_modalbasis->mtheta(); ++k )
     {
         {
             using namespace ExpressionAssembly;
 
             integrate ( elements( M_etpfespace->mesh() ),
-                        M_pressureFespace->qr(),
+                        M_velocityFespace->qr(),
                         M_etpfespace,
                         0 * phi_i
                       )
@@ -1052,86 +669,26 @@ addrhsFSI( const vector_ptrType& rhs, const vector_type& f, const vector_type& u
     return;
 }
 
-//------------------------------------------------------------------------------
-
-//---------------- Parte relativa all'integrale di bordo del rhs ---------------
-
 template< typename mesh_type, typename matrix_type, typename vector_type>
 void NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::
-addWallrhsFSI( const vector_ptrType& rhs, const vector_type& urWall_old, const vector_type& etar_old, const Real& rho_s, const Real& h_s, const Real& dt, const Real& E, const Real& csi, const Real& R0 )
+addBcFSI( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs, const Real& p1, const Real& p2 )
 {
-	DOF DatauFESpace( M_velocityFespace->dof() );
-	UInt ndofuFE = DatauFESpace.numTotalDof();
-	DOF DatapFESpace( M_pressureFespace->dof() );
-	UInt ndofpFE = DatapFESpace.numTotalDof();
 
-	std::vector<Real> Reval( ndofuFE );
-	std::vector<Real> dReval( ndofuFE );
+    UInt dof = M_etufespace->dof().numTotalDof();
+    UInt pdof = M_etpfespace->dof().numTotalDof();
 
-	QuadratureRule interpQuad;
-	interpQuad.setDimensionShape( shapeDimension( M_velocityFespace->refFEPtr()->shape() ), M_velocityFespace->refFEPtr()->shape() );
-	interpQuad.setPoints( M_velocityFespace->refFEPtr()->refCoor(), std::vector<Real> ( M_velocityFespace->refFEPtr()->nbDof(), 0 ) );
-	CurrentFE interpCFE( *( M_velocityFespace->refFEPtr() ), getGeometricMap( *( M_velocityFespace->mesh() ) ), interpQuad );
-	interpCFE.update( M_velocityFespace->mesh()->element (0), UPDATE_QUAD_NODES );
+    for( UInt k = 0; k != M_modalbasis->mx(); ++k )
+    {
+        Real B0;
+        M_modalbasis->compute_b0( k, p1, B0 );
+        Real BL;
+        M_modalbasis->compute_bL( k, p2, BL );
 
-	Real h   = ( interpCFE.quadNode( 1, 0 ) - interpCFE.quadNode( 0, 0 ) ) / 2;
-
-	//Cycling on r-block
-	for ( UInt k = 0; k != M_modalbasis->mr(); ++k )
-	{
-			vector_ptrType B00r( new vector_type( M_velocityFespace->map(), Repeated ) );
-			M_modalbasis->computeFSI_b00r( k, urWall_old, etar_old, rho_s, h_s, dt, E, csi, R0, *B00r );
-
-			{
-					using namespace ExpressionAssembly;
-
-					integrate ( elements( M_etufespace->mesh() ),
-											M_velocityFespace->qr(),
-											M_etufespace,
-											value( M_etufespace, *B00r ) * phi_i
-										)
-									>> ( rhs->block( M_modalbasis->mx() + k ) );
-			}
-
-	}
-
-	return;
-}
-
-//------------------------------------------------------------------------------
-
-//------------ Parte relativa agli integrali in inflow e outflow ---------------
-
-template< typename mesh_type, typename matrix_type, typename vector_type>
-void NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::
-addBCxInOutFSI( const vector_ptrType& rhs, const Real& p1, const Real& p2 )
-{
-		UInt dof = M_etufespace->dof().numTotalDof();
-
-		for( UInt k = 0; k != M_modalbasis->mx(); ++k )
-		{
-				Real P00x1;
-				M_modalbasis->computeFSI_p00x1( k, p1, P00x1 );
-				Real P00x2;
-				M_modalbasis->computeFSI_p00x2( k, p2, P00x2 );
-
-				rhs->setCoefficient( k * dof,
-														 ( *rhs )( k * dof ) + P00x1 );
-				rhs->setCoefficient( ( k + 1 ) * dof - 1,
-										         ( *rhs )( ( k + 1 ) * dof - 1 ) + P00x2 );
-		}
-}
-
-//------------------------------------------------------------------------------
-
-//------ Parte relativa alle condizioni al bordo di Dirichlet omogenee ---------
-
-template< typename mesh_type, typename matrix_type, typename vector_type>
-void NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::
-addBCrInOutFSI( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs )
-{
-    UInt udof = M_etufespace->dof().numTotalDof();
-		UInt pdof = M_etpfespace->dof().numTotalDof();
+        rhs->setCoefficient( k * dof,
+                             ( *rhs )( k * dof ) - B0 );
+        rhs->setCoefficient( ( k + 1 ) * dof - 1,
+                             ( *rhs )( ( k + 1 ) * dof - 1 ) + BL );
+    }
 
     for ( UInt j = 0; j != M_modalbasis->mr(); ++j )
     {
@@ -1141,14 +698,6 @@ addBCrInOutFSI( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs )
 				systemMatrix->setCoefficient( M_modalbasis->mx() * udof + j * udof + pdof - 1, M_modalbasis->mx() * udof + j * udof + pdof - 1, 1e+30 );
 				rhs->setCoefficient( M_modalbasis->mx() * udof + j * udof + pdof - 1, 0 );
     }
-}
-
-template< typename mesh_type, typename matrix_type, typename vector_type>
-void NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::
-addBCthetaInOutFSI( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs )
-{
-    UInt udof = M_etufespace->dof().numTotalDof();
-		UInt pdof = M_etpfespace->dof().numTotalDof();
 
     for ( UInt j = 0; j != M_modalbasis->mr(); ++j )
     {
@@ -1158,97 +707,8 @@ addBCthetaInOutFSI( const matrix_ptrType& systemMatrix, const vector_ptrType& rh
 				systemMatrix->setCoefficient( M_modalbasis->mx() * udof + M_modalbasis->mr() * udof + j * udof + pdof - 1, M_modalbasis->mx() * udof + M_modalbasis->mr() * udof + j * udof + pdof - 1, 1e+30 );
 				rhs->setCoefficient( M_modalbasis->mx() * udof + M_modalbasis->mr() * udof + j * udof + pdof - 1, 0 );
     }
+
 }
-
-//------------------------------------------------------------------------------
-
-/*
-template< typename mesh_type, typename matrix_type, typename vector_type>
-void NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::
-addrhs( const vector_ptrType& rhs, const Real& fx, const Real& fr, const Real& ftheta, const bool& b )
-{
-    //Cycling on x-block
-    for ( UInt k = 0; k != M_modalbasis->mx(); ++k )
-    {
-        vector_ptrType Phix( new vector_type( M_velocityFespace->map(), Repeated ) );
-        M_modalbasis->computeFSI_Phix( k, *Phix );
-
-        *Phix *= fx;
-
-        {
-            using namespace ExpressionAssembly;
-
-            integrate ( elements( M_etufespace->mesh() ),
-                        M_velocityFespace->qr(),
-                        M_etufespace,
-                        value( M_etufespace, *Phix ) * phi_i
-                      )
-                    >> ( rhs->block( k ) );
-        }
-
-    }
-
-    //Cycling on r-block
-    for ( UInt k = 0; k != M_modalbasis->mr(); ++k )
-    {
-        vector_ptrType Phir( new vector_type( M_velocityFespace->map(), Repeated ) );
-        M_modalbasis->computeFSI_Phir( k, *Phir );
-
-        *Phir *= fr;
-
-        {
-            using namespace ExpressionAssembly;
-
-            integrate ( elements( M_etufespace->mesh() ),
-                        M_velocityFespace->qr(),
-                        M_etufespace,
-                        value( M_etufespace, *Phir ) * phi_i
-                      )
-                    >> ( rhs->block( M_modalbasis->mx() + k ) );
-        }
-
-    }
-
-    //Cycling on theta-block
-    for ( UInt k = 0; k != M_modalbasis->mtheta(); ++k )
-    {
-        vector_ptrType Phitheta( new vector_type( M_velocityFespace->map(), Repeated ) );
-        M_modalbasis->computeFSI_Phitheta( k, *Phitheta );
-
-        *Phitheta *= ftheta;
-
-        {
-            using namespace ExpressionAssembly;
-
-            integrate ( elements( M_etufespace->mesh() ),
-                        M_velocityFespace->qr(),
-                        M_etufespace,
-                        value( M_etufespace, *Phitheta ) * phi_i
-                      )
-                    >> ( rhs->block( M_modalbasis->mx() + M_modalbasis->mr() + k ) );
-        }
-
-    }
-
-    //Cycling on p-block : null force
-    for ( UInt k = 0; k != M_modalbasis->mtheta(); ++k )
-    {
-        {
-            using namespace ExpressionAssembly;
-
-            integrate ( elements( M_etpfespace->mesh() ),
-                        M_velocityFespace->qr(),
-                        M_etpfespace,
-                        0 * phi_i
-                      )
-                    >> ( rhs->block( M_modalbasis->mx() + M_modalbasis->mr() + M_modalbasis->mtheta() + k ) );
-        }
-
-    }
-
-    return;
-}
-*/
 
 template< typename mesh_type, typename matrix_type, typename vector_type>
 vector_type NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::

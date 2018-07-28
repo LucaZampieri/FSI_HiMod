@@ -464,26 +464,16 @@ private:
 
 public:
 
-    typedef std::vector<std::vector<std::vector<std::tuple<Real, Real, Real>>>> grid_type;
+    typedef VectorEpetraStructured vector_Type;
 
-    void addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& mu, const Real& rho_f, const Real& dt, ReferenceMap& refMap, const Real& t );
-    void addALEProblemFSI(    const matrix_ptrType& systemMatrix, const Real& rho_f, const vector_type& wr, ReferenceMap& refMap, const Real& t );
-    void addWallProblemFSI(   const matrix_ptrType& systemMatrix, const Real& rho_s, const Real& h_s, const Real& dt, const Real& E, const Real& csi, const Real& R0, ReferenceMap& refMap, const Real& t );
-    void addrhsFSI(           const vector_ptrType& rhs, const vector_type& f, const vector_type& u_old, const Real& rho_f, const Real& dt );
-    void addWallrhsFSI(       const vector_ptrType& rhs, const vector_type& urWall_old, const vector_type& etar_old, const Real& rho_s, const Real& h_s, const Real& dt, const Real& E, const Real& csi, const Real& R0 );
-
-    void addBCxInOutFSI( const vector_ptrType& rhs, const Real& p1, const Real& p2 );
-    void addBCrInOutFSI( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs );
-    void addBCthetaInOutFSI( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs );
+    void addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& nu, const Real& rho_s, const Real& h_s, const Real& e, ReferenceMap& refMap, const Real& t, const Real& alpha );
+    void addRrhsFSI( const vector_ptrType& rhs, const Real& alpha, const Real& rho_s, const Real& h_s, const Real& e, const vector_Type& f, const vector_Type& u_old, const vector_Type& urWall_old, const vector_Type& etar_old );
+    void addBcFSI ( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs, const Real& p1, const Real& p2 );
 
     vector_type evaluateForce3DGridFSI( const function_Type& fx, const function_Type& fr, const function_Type& ftheta, const Real& t, const grid_type& grid );
     vector_type evaluateBase3DGridFSI( const vector_type& fun );
     vector_type evaluateBaseWallGridFSI( const vector_type& fun );
     vector_type evaluateInitialVelocityWallFSI( const function_Type& ur0, const grid_type& grid, const Real& R );
-
-private:
-
-
 
 // -----------------------------------------------------------------------------
 

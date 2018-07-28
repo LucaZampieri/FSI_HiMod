@@ -559,25 +559,24 @@ protected:
 
     referenceMap_type*		M_map;
 
-
-
-
-
-
-
-
-
 // -------------------------------- New FSI ------------------------------------
 
 public:
 
-    // Constructor for the FSI problem
     NSModalSpaceCircular
-    ( const Real& Rho, const Real& Theta, const UInt& Mx, const UInt& Mr, const UInt& Mtheta, const UInt& Mp, const UInt& udof,
-    referenceMap_type* map, const QuadratureRule* quadrhowall = &quadRuleBoundary, const QuadratureRule* quadrho = &quadRuleLobSeg64pt, const QuadratureRule* quadtheta = &quadRuleLobSeg64pt ) :
-    NSModalSpaceAbstract( Mx, Mr, Mtheta, Mp ), M_Rho( Rho ), M_dRho( 0 ), M_Theta( Theta ), M_udof( udof ),
-    M_quadruleRho( quadrho ), M_quadruleRhoWall(quadrhowall), M_quadruleTheta( quadtheta ), M_map( map ),
-    M_fRho( map->fR() ), M_fdRho( map->fDxR() ),
+    ( const Real& Rho, const Real& dRho, const Real& Theta, const UInt& Mx, const UInt& Mr, const UInt& Mtheta, const UInt& Mp, const UInt& udof,
+    referenceMap_type* map, const QuadratureRule* quadrhowall = &quadRuleBoundary, const QuadratureRule* quadrho = &quadRuleLobSeg64pt, const QuadratureRule* quadtheta = &quadRuleLobSeg64pt,
+    const function_Type& R = fake, const function_Type& dR = fake ) :
+    NSModalSpaceAbstract( Mx, Mr, Mtheta, Mp ), M_Rho( Rho ), M_dRho( dRho ), M_Theta( Theta ), M_udof( udof ),
+    M_quadruleRhoWall(quadrhowall), M_quadruleRho( quadrho ), M_quadruleTheta( quadtheta ), M_map( map ), M_fRho( R ), M_fdRho( dR ),
+    M_nQuadRho( M_quadruleRho->nbQuadPt() ), M_nQuadTheta( M_quadruleTheta->nbQuadPt() ) {};
+
+    NSModalSpaceCircular
+    ( const function_Type& Rho, const function_Type& dRho, const Real& Theta, const UInt& Mx, const UInt& Mr, const UInt& Mtheta, const UInt& Mp, const UInt& udof,
+    referenceMap_type* map, const QuadratureRule* quadrhowall = &quadRuleBoundary, const QuadratureRule* quadrho = &quadRuleLobSeg64pt, const QuadratureRule* quadtheta = &quadRuleLobSeg64pt,
+    const Real& R = 1, const Real& dR = 1 ) :
+    NSModalSpaceAbstract( Mx, Mr, Mtheta, Mp ), M_fRho( Rho ), M_fdRho( dRho ), M_Theta( Theta ), M_udof( udof ),
+    M_quadruleRhoWall(quadrhowall), M_quadruleRho( quadrho ), M_quadruleTheta( quadtheta ), M_map( map ), M_Rho( R ), M_dRho( dR ),
     M_nQuadRho( M_quadruleRho->nbQuadPt() ), M_nQuadTheta( M_quadruleTheta->nbQuadPt() ) {};
 
     //! return the Quadrature rule
@@ -598,147 +597,55 @@ public:
         return M_rdphirhoWall[j][5];
     }
 
-    void evaluateBasisFSI();
-    void evaluateBasisFSI( const std::string& xPoly,
-                           const std::string& rPoly,
-                           const std::string& thetaPoly,
-                           const std::string& pPoly,
-                           const int trigonometricBasis );
+    void evaluateBasisFSI()
+    void evaluateBasisFSI( const std::string& xPoly, const std::string& rPoly, const std::string& thetaPoly, const std::string& pPoly, const int trigonometricBasis );
 
-     virtual void computeFSI_r000xx( const UInt& k, const UInt& j, const Real& mu, const Real& rho_f, const Real& dt, vector_Type& R000xx ) const;
-     virtual void computeFSI_r001xx( const UInt& k, const UInt& j, const Real& mu, vector_Type& R001xx ) const;
+    // Only x-dependence
 
-     virtual void computeFSI_r010xx( const UInt& k, const UInt& j, const Real& mu, vector_Type& R010xx ) const;
-     virtual void computeFSI_r100xx( const UInt& k, const UInt& j, const Real& mu, vector_Type& R100xx ) const;
-     virtual void computeFSI_r101xx( const UInt& k, const UInt& j, const Real& mu, vector_Type& R101xx ) const;
-     virtual void computeFSI_r110xx( const UInt& k, const UInt& j, const Real& mu, vector_Type& R110xx ) const;
+    virtual void compute_r000rr( const UInt& k, const UInt& j, const Real& nu, const Real& alpha, const Real& rho_s, const Real& h_s, const Real& e, vector_Type& R000rr ) const;
 
-     virtual void computeFSI_r000rr( const UInt& k, const UInt& j, const Real& mu, const Real& rho_f, const Real& dt, vector_Type& R000rr ) const;
-     virtual void computeFSI_r001rr( const UInt& k, const UInt& j, const Real& mu, vector_Type& R001rr ) const;
-     virtual void computeFSI_r010rr( const UInt& k, const UInt& j, const Real& mu, vector_Type& R010rr ) const;
-     virtual void computeFSI_r100rr( const UInt& k, const UInt& j, const Real& mu, vector_Type& R100rr ) const;
-     virtual void computeFSI_r101rr( const UInt& k, const UInt& j, const Real& mu, vector_Type& R101rr ) const;
-     virtual void computeFSI_r110rr( const UInt& k, const UInt& j, const Real& mu, vector_Type& R110rr ) const;
+    virtual void compute_r00x( const UInt& j, const vector_Type& f, const vector_Type& u_old, const Real& alpha, vector_Type& R00x ) const;
+    virtual void compute_r00r( const UInt& j, const vector_Type& f, const vector_Type& u_old, const vector_Type& urWall_old, const vector_Type& etar_old, const Real& alpha, const Real& rho_s, const Real& h_s, const Real& e, vector_Type& R00r ) const;
+    virtual void compute_r00t( const UInt& j, const vector_Type& f, const vector_Type& u_old, const Real& alpha, vector_Type& R00t ) const;
 
-     virtual void computeFSI_r000tt( const UInt& k, const UInt& j, const Real& mu, const Real& rho_f, const Real& dt, vector_Type& R000tt ) const;
-     virtual void computeFSI_r001tt( const UInt& k, const UInt& j, const Real& mu, vector_Type& R001tt ) const;
-     virtual void computeFSI_r010tt( const UInt& k, const UInt& j, const Real& mu, vector_Type& R010tt ) const;
-     virtual void computeFSI_r100tt( const UInt& k, const UInt& j, const Real& mu, vector_Type& R100tt ) const;
-     virtual void computeFSI_r101tt( const UInt& k, const UInt& j, const Real& mu, vector_Type& R101tt ) const;
-     virtual void computeFSI_r110tt( const UInt& k, const UInt& j, const Real& mu, vector_Type& R110tt ) const;
+    virtual void compute_b0( const UInt& j, const Real& p1, Real& B0 ) const;
+    virtual void compute_bL( const UInt& j, const Real& p2, Real& BL ) const;
 
-     virtual void computeFSI_r000xr( const UInt& k, const UInt& j, const Real& mu, vector_Type& R000xr ) const;
-     virtual void computeFSI_r001xr( const UInt& k, const UInt& j, const Real& mu, vector_Type& R001xr ) const;
-     virtual void computeFSI_r010xr( const UInt& k, const UInt& j, const Real& mu, vector_Type& R010xr ) const;
+  protected:
 
-     virtual void computeFSI_r000xt( const UInt& k, const UInt& j, const Real& mu, vector_Type& R000xt ) const;
-     virtual void computeFSI_r001xt( const UInt& k, const UInt& j, const Real& mu, vector_Type& R001xt ) const;
-     virtual void computeFSI_r010xt( const UInt& k, const UInt& j, const Real& mu, vector_Type& R010xt ) const;
+      const QuadratureRule* M_quadruleRhoWall;
 
-     virtual void computeFSI_r000rx( const UInt& k, const UInt& j, const Real& mu, vector_Type& R000rx ) const;
-     virtual void computeFSI_r100rx( const UInt& k, const UInt& j, const Real& mu, vector_Type& R100rx ) const;
+      MBMatrix_type     M_rphirhoWall;
+      MBMatrix_type     M_rdphirhoWall;
 
-     virtual void computeFSI_r000rt( const UInt& k, const UInt& j, const Real& mu, vector_Type& R000rt ) const;
+      UInt M_udof;
+      UInt M_nQuadRho;
+      UInt M_nQuadTheta;
 
-     virtual void computeFSI_r000tx( const UInt& k, const UInt& j, const Real& mu, vector_Type& R000tx ) const;
-     virtual void computeFSI_r100tx( const UInt& k, const UInt& j, const Real& mu, vector_Type& R100tx ) const;
-
-     virtual void computeFSI_r000tr( const UInt& k, const UInt& j, const Real& mu, vector_Type& R000tr ) const;
-
-     virtual void computeFSI_r000xp( const UInt& k, const UInt& j, vector_Type& R000xp ) const;
-     virtual void computeFSI_r100xp( const UInt& k, const UInt& j, vector_Type& R100xp ) const;
-
-     virtual void computeFSI_r000rp( const UInt& k, const UInt& j, vector_Type& R000rp ) const;
-
-     virtual void computeFSI_r000tp( const UInt& k, const UInt& j, vector_Type& R000tp ) const;
-
-     virtual void computeFSI_r000px( const UInt& k, const UInt& j, vector_Type& R000px ) const;
-     virtual void computeFSI_r001px( const UInt& k, const UInt& j, vector_Type& R001px ) const;
-     virtual void computeFSI_r010px( const UInt& k, const UInt& j, vector_Type& R010px ) const;
-
-     virtual void computeFSI_r000pr( const UInt& k, const UInt& j, vector_Type& R000pr ) const;
-
-     virtual void computeFSI_r000pt( const UInt& k, const UInt& j, vector_Type& R000pt ) const;
-
-// ---------------         Section lumping: ALE velocity         -----------------------
-/*
-     virtual void computeFSI_w100xx( const UInt& k, const UInt& j, const vector_Type& wx, const Real& rho_f, vector_Type& W100xx) const;
-
-     virtual void computeFSI_w000xx( const UInt& k, const UInt& j, const vector_Type& wx, const Real& rho_f, vector_Type& W000xx) const;
-
-     virtual void computeFSI_w000xr( const UInt& k, const UInt& j, const vector_Type& wx, const Real& rho_f, vector_Type& W000xr) const;
-
-     virtual void computeFSI_w000xt( const UInt& k, const UInt& j, const vector_Type& wx, const Real& rho_f, vector_Type& W000xt) const;
-*/
-     virtual void computeFSI_w100rx( const UInt& k, const UInt& j, const vector_Type& wr, const Real& rho_f, vector_Type& W100rx) const;
-
-     virtual void computeFSI_w000rx( const UInt& k, const UInt& j, const vector_Type& wr, const Real& rho_f, vector_Type& W000rx) const;
-
-     virtual void computeFSI_w000rr( const UInt& k, const UInt& j, const vector_Type& wr, const Real& rho_f, vector_Type& W000rr) const;
-
-     virtual void computeFSI_w000rt( const UInt& k, const UInt& j, const vector_Type& wr/*, const vector_Type& wtheta*/, const Real& rho_f, vector_Type& W000rt) const;
-/*
-     virtual void computeFSI_w100tx( const UInt& k, const UInt& j, const vector_Type& wtheta, const Real& rho_f, vector_Type& W100tx) const;
-
-     virtual void computeFSI_w000tx( const UInt& k, const UInt& j, const vector_Type& wtheta, const Real& rho_f, vector_Type& W000tx) const;
-
-     virtual void computeFSI_w000tr( const UInt& k, const UInt& j, const vector_Type& wtheta, const Real& rho_f, vector_Type& W000tr) const;
-  */
-     virtual void computeFSI_w000tt( const UInt& k, const UInt& j, const vector_Type& wr/*, const vector_Type& wtheta*/, const Real& rho_f, vector_Type& W000tt) const;
-
-// ---------------         Section lumping: force terms        -----------------------
-
-     virtual void computeFSI_f00x( const UInt& j, const vector_Type& f, const vector_Type& u_old, const Real& rho_f, const Real& dt, vector_Type& F00x ) const;
-     virtual void computeFSI_f00r( const UInt& j, const vector_Type& f, const vector_Type& u_old, const Real& rho_f, const Real& dt, vector_Type& F00r ) const;
-     virtual void computeFSI_f00t( const UInt& j, const vector_Type& f, const vector_Type& u_old, const Real& rho_f, const Real& dt, vector_Type& F00t ) const;
-
-// ---------------         Section lumping: pressure terms         -----------------------
-
-     virtual void computeFSI_p00x1( const UInt& j, const Real& p1, Real& P00x1 ) const;
-     virtual void computeFSI_p00x2( const UInt& j, const Real& p2, Real& P00x2 ) const;
-
-// ---------------         Section lumping: boundary terms         -----------------------
-
-     virtual void computeFSI_b000rr( const UInt& k, const UInt& j, const Real& rho_s, const Real& h_s, const Real& dt, const Real& E, const Real& csi, const Real& R0, vector_Type& B000rr ) const;
-     virtual void computeFSI_b00r( const UInt& j, const vector_Type& urWall_old, const vector_Type& etar_old, const Real& rho_s, const Real& h_s, const Real& dt, const Real& E, const Real& csi, const Real& R0, vector_Type& B00r ) const;
-
-protected:
-
-    const QuadratureRule* M_quadruleRhoWall;
-
-    UInt M_udof;
-    UInt M_nQuadRho;
-    UInt M_nQuadTheta;
-
-    // Helper functions
-    UInt xcoord2index( const UInt& i, const UInt& j, const UInt& k ) const
-    {
-      return ( j + k*M_nQuadRho + i*M_nQuadRho*M_nQuadTheta );
-    }
-    UInt rcoord2index( const UInt& i, const UInt& j, const UInt& k ) const
-    {
-      return ( M_udof*M_nQuadRho*M_nQuadTheta + j + k*M_nQuadRho + i*M_nQuadRho*M_nQuadTheta );
-    }
-    UInt thetacoord2index( const UInt& i, const UInt& j, const UInt& k ) const
-    {
-      return ( 2*M_udof*M_nQuadRho*M_nQuadTheta + j + k*M_nQuadRho + i*M_nQuadRho*M_nQuadTheta );
-    }
-    UInt pcoord2index( const UInt& i, const UInt& j, const UInt& k ) const
-    {
-      return ( 3*M_udof*M_nQuadRho*M_nQuadTheta + j + k*M_nQuadRho + i*M_nQuadRho*M_nQuadTheta );
-    }
-    UInt coord2indexWall( const UInt& i, const UInt& k ) const
-    {
-      return ( k + i*M_nQuadTheta );
-    }
-
-    MBMatrix_type     M_rphirhoWall;
-    MBMatrix_type     M_rdphirhoWall;
+      // Helper functions
+      UInt xcoord2index( const UInt& i, const UInt& j, const UInt& k ) const
+      {
+        return ( j + k*M_nQuadRho + i*M_nQuadRho*M_nQuadTheta );
+      }
+      UInt rcoord2index( const UInt& i, const UInt& j, const UInt& k ) const
+      {
+        return ( M_udof*M_nQuadRho*M_nQuadTheta + j + k*M_nQuadRho + i*M_nQuadRho*M_nQuadTheta );
+      }
+      UInt thetacoord2index( const UInt& i, const UInt& j, const UInt& k ) const
+      {
+        return ( 2*M_udof*M_nQuadRho*M_nQuadTheta + j + k*M_nQuadRho + i*M_nQuadRho*M_nQuadTheta );
+      }
+      UInt pcoord2index( const UInt& i, const UInt& j, const UInt& k ) const
+      {
+        return ( 3*M_udof*M_nQuadRho*M_nQuadTheta + j + k*M_nQuadRho + i*M_nQuadRho*M_nQuadTheta );
+      }
+      UInt coord2indexWall( const UInt& i, const UInt& k ) const
+      {
+        return ( k + i*M_nQuadTheta );
+      }
 
 // -----------------------------------------------------------------------------
 
 };
-
 }// namespace LifeV
-
 #endif // __MODALSPACECIRCULAR_HPP_
