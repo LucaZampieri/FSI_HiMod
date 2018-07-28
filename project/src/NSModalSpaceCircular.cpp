@@ -1,7 +1,8 @@
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
-#include <lifev/himod/modalbasis/NSModalSpaceCircular.hpp>
+// #include <lifev/himod/modalbasis/NSModalSpaceCircular.hpp>
+#include "include/NSModalSpaceCircular.hpp"
 #include <iomanip>
 namespace LifeV
 {
@@ -4113,7 +4114,7 @@ void NSModalSpaceCircular::compute_r00x( const UInt& j, const vector_Type& f, co
 									M_Theta * M_quadruleRho->weight( n ) * M_quadruleTheta->weight( h );
 						}
 				}
-				R00x[m] = (coeff1 + coeff2)*M_map->xJacobian()[m]
+				R00x[m] = (coeff1 + coeff2)*M_map->xJacobian()[m];
 		}
 
 		R00x *= M_map->xR();
@@ -4206,7 +4207,7 @@ void NSModalSpaceCircular::compute_r00t( const UInt& j, const vector_Type& f, co
 									M_Theta * M_quadruleRho->weight( n ) * M_quadruleTheta->weight( h );
 						}
 				}
-				R00t[m] = (coeff1 + coeff2)*M_map->xJacobian()[m]
+				R00t[m] = (coeff1 + coeff2)*M_map->xJacobian()[m];
 		}
 
 		R00t *= M_map->xR();
@@ -4264,7 +4265,7 @@ void NSModalSpaceCircular::compute_bL( const UInt& j, const Real& p2, Real& BL )
 				}
 		}
 
-		BL = coeff1*M_map->xJacobian().back()*M_map->xR().back(); // verify if .back() exists (Andrea)
+		BL = coeff1*M_map->xJacobian()[M_map->xJacobian().size()-1]*M_map->xR()[M_map->xR().size()-1]; // verify if .back() exists (Andrea)
 
 }
 
