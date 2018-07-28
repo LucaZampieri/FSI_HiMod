@@ -25,7 +25,7 @@
 
 #include <lifev/core/filter/GetPot.hpp>
 
-
+#include "FSIData.hpp"
 
 #include <lifev/core/array/MatrixEpetra.hpp>
 #include <lifev/core/array/MatrixEpetraStructured.hpp>
@@ -39,7 +39,7 @@
 #include "NSModalSpaceCircular.hpp"
 #include "NSHiModAssembler.hpp"
 #include "ReferenceMap.hpp"
-#include "FSIData.hpp"
+
 
 #include <lifev/himod/tools/HiModExporterVtk.hpp>
 
