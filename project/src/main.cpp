@@ -133,7 +133,7 @@ int main( int argc, char* argv[] )
     file_exists(dataFileName);
   }  catch (const char* msg) {std::cerr << msg << std::endl; return 0;}
   // Get data
-  GetPot dataFile( dataFileName );
+  GetPot dataFile( "data/data" );
   if (verbose) { std::cout <<"Definition of FSIData: "; }
   FSIData data( dataFile );
   data.printAll();

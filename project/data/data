@@ -1,4 +1,4 @@
-[set]
+[./set]
   verbose = 1
 [../]
 

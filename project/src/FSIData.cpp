@@ -47,7 +47,7 @@ FSIData::FSIData( GetPot dataFile ) :
          D_ftheta(  muparser_function( D_ftheta_str ) ),
          D_Radius(  muparser_function( D_Radius_str ) ),
          D_dRadius( muparser_function( D_dRadius_str ) )
-{}
+{std::cout <<"Constructed FSIData" <<std::endl;}
 
 void FSIData::printAll() const
 {
