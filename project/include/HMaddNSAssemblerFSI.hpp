@@ -597,7 +597,7 @@ addRhsFSI( const vector_ptrType& rhs, const Real& alpha, const Real& rho_s, cons
     for ( UInt k = 0; k != M_modalbasis->mx(); ++k )
     {
         vector_ptrType r00x( new vector_type( M_velocityFespace->map(), Repeated ) );
-        M_modalbasis->compute_r00x( k, f, u_old, ualpha, *r00x );
+        M_modalbasis->compute_r00x( k, f, u_old, alpha, *r00x );
 
         {
             using namespace ExpressionAssembly;
@@ -674,7 +674,7 @@ void NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::
 addBcFSI( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs, const Real& p1, const Real& p2 )
 {
 
-    UInt dof = M_etufespace->dof().numTotalDof();
+    UInt udof = M_etufespace->dof().numTotalDof();
     UInt pdof = M_etpfespace->dof().numTotalDof();
 
     for( UInt k = 0; k != M_modalbasis->mx(); ++k )
@@ -684,10 +684,10 @@ addBcFSI( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs, const R
         Real BL;
         M_modalbasis->compute_bL( k, p2, BL );
 
-        rhs->setCoefficient( k * dof,
-                             ( *rhs )( k * dof ) - B0 );
-        rhs->setCoefficient( ( k + 1 ) * dof - 1,
-                             ( *rhs )( ( k + 1 ) * dof - 1 ) + BL );
+        rhs->setCoefficient( k *udof,
+                             ( *rhs )( k *udof ) - B0 );
+        rhs->setCoefficient( ( k + 1 ) *udof - 1,
+                             ( *rhs )( ( k + 1 ) *udof - 1 ) + BL );
     }
 
     for ( UInt j = 0; j != M_modalbasis->mr(); ++j )

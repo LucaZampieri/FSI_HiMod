@@ -88,9 +88,9 @@ class FSIData
     {
       return D_rho_f;
     }
-    const Real& mu() const
+    const Real& nu() const
     {
-      return D_mu;
+      return D_nu;
     }
 
     const function_Type& ux0() const
@@ -180,7 +180,7 @@ class FSIData
     Real D_csi;               // Poisson modulus
 
     Real D_rho_f;             // density of the fluid
-    Real D_mu;                // dynamical viscosity of the fluid
+    Real D_nu;                // dynamical viscosity of the fluid
 
     std::string D_ux0_str;      // string of the initial axial velocity
     std::string D_ur0_str;      // string of the initial radial velocity

@@ -21,6 +21,7 @@
 [fluid]
     [./physics]
         mu        = 0.0279
+        nu        = 0.0222
         rho_f     = 1050
         density   = 1.
         Rin       = 0.5

@@ -24,7 +24,7 @@ FSIData::FSIData( GetPot dataFile ) :
          D_E( dataFile( "fluid/structure/E", 1. ) ),
          D_csi( dataFile( "fluid/structure/csi", 1. ) ),
          D_rho_f( dataFile( "fluid/physics/rho_f", 1. ) ),
-         D_mu( dataFile( "fluid/physics/mu", 1. ) ),
+         D_nu( dataFile( "fluid/physics/nu", 1. ) ),
 
          D_ux0_str( dataFile( "functions/ux0", "0" ) ),
          D_ur0_str( dataFile( "functions/ur0", "0" ) ),
@@ -34,7 +34,6 @@ FSIData::FSIData( GetPot dataFile ) :
          D_fx_str( dataFile( "functions/fx", "0" ) ),
          D_fr_str( dataFile( "functions/fr", "0" ) ),
          D_ftheta_str( dataFile( "functions/ftheta", "0" ) ),
-
          D_Radius_str(  dataFile( "functions/Radius" , "0" ) ),
          D_dRadius_str( dataFile( "functions/dRadius", "0" ) ),
 
@@ -45,8 +44,8 @@ FSIData::FSIData( GetPot dataFile ) :
          D_p2( muparser_timeFunction( D_p2_str ) ),
          D_fx( muparser_function( D_fx_str ) ),
          D_fr( muparser_function( D_fr_str ) ),
-         D_ftheta(  muparser_function( D_ftheta_str ) )
-         D_Radius(  muparser_function( D_Radius_str ) )
+         D_ftheta(  muparser_function( D_ftheta_str ) ),
+         D_Radius(  muparser_function( D_Radius_str ) ),
          D_dRadius( muparser_function( D_dRadius_str ) )
 {}
 
@@ -76,7 +75,7 @@ void FSIData::printAll() const
   std::cout <<"csi: " <<D_csi <<std::endl;
 
   std::cout <<"rho_f: " <<D_rho_f <<std::endl;
-  std::cout <<"mu: " <<D_mu <<std::endl;
+  std::cout <<"nu: " <<D_nu <<std::endl;
 
   std::cout <<"ux0 = " <<D_ux0_str <<std::endl;
   std::cout <<"ur0 = " <<D_ur0_str <<std::endl;

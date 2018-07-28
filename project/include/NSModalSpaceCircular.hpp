@@ -597,7 +597,7 @@ public:
         return M_rdphirhoWall[j][5];
     }
 
-    void evaluateBasisFSI()
+    void evaluateBasisFSI();
     void evaluateBasisFSI( const std::string& xPoly, const std::string& rPoly, const std::string& thetaPoly, const std::string& pPoly, const int trigonometricBasis );
 
     // Only x-dependence

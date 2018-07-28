@@ -97,7 +97,7 @@ public:
     typedef boost::shared_ptr<etfespace_type>               etfespace_ptrType;
 
     //! Typedef for the modal basis
-    typedef NSModalSpaceCircular                              modalbasis_type;
+    typedef NSModalSpaceCircular                            modalbasis_type;
     //! Typedef for a pointer on the modal basis
     typedef boost::shared_ptr<modalbasis_type>              modalbasis_ptrType;
 
@@ -120,26 +120,26 @@ public:
     typedef LifeChrono                                      chrono_type;
 
     //! Typedef for a pointer on the communicator
-    typedef typename map_type::comm_ptrtype 				commPtr_Type;
+    typedef typename map_type::comm_ptrtype 			         	commPtr_Type;
 
     //! Typedef for the export
-    typedef RegionMesh<LinearTetra> 						export_mesh_Type;
+    typedef RegionMesh<LinearTetra> 				            		export_mesh_Type;
 
     typedef boost::shared_ptr<export_mesh_Type>             export_meshPtr_Type;
 
     typedef ExporterData<export_mesh_Type>                  exporterData_Type;
 
-    typedef typename exporterData_Type::WhereEnum			WhereEnum;
+    typedef typename exporterData_Type::WhereEnum		      	WhereEnum;
 
-    typedef typename exporterData_Type::FieldTypeEnum		FieldTypeEnum;
+    typedef typename exporterData_Type::FieldTypeEnum	    	FieldTypeEnum;
 
-    typedef typename exporterData_Type::FieldRegimeEnum		FieldRegimeEnum;
+    typedef typename exporterData_Type::FieldRegimeEnum	   	FieldRegimeEnum;
 
-    typedef VectorEpetra									export_vector_type;
+    typedef VectorEpetra								                   	export_vector_type;
 
-    typedef boost::shared_ptr<export_vector_type>			export_vector_ptrType;
+    typedef boost::shared_ptr<export_vector_type>			      export_vector_ptrType;
 
-	typedef PreconditionerIfpack                			prec_Type;
+	typedef PreconditionerIfpack                		        	prec_Type;
     //@}
 
 
@@ -464,10 +464,11 @@ private:
 
 public:
 
+    typedef std::vector<std::vector<std::vector<std::tuple<Real, Real, Real>>>> grid_type;
     typedef VectorEpetraStructured vector_Type;
 
     void addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& nu, const Real& rho_s, const Real& h_s, const Real& e, ReferenceMap& refMap, const Real& t, const Real& alpha );
-    void addRrhsFSI( const vector_ptrType& rhs, const Real& alpha, const Real& rho_s, const Real& h_s, const Real& e, const vector_Type& f, const vector_Type& u_old, const vector_Type& urWall_old, const vector_Type& etar_old );
+    void addRhsFSI( const vector_ptrType& rhs, const Real& alpha, const Real& rho_s, const Real& h_s, const Real& e, const vector_Type& f, const vector_Type& u_old, const vector_Type& urWall_old, const vector_Type& etar_old );
     void addBcFSI ( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs, const Real& p1, const Real& p2 );
 
     vector_type evaluateForce3DGridFSI( const function_Type& fx, const function_Type& fr, const function_Type& ftheta, const Real& t, const grid_type& grid );

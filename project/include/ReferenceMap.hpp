@@ -372,7 +372,7 @@ class ReferenceMap
                 return *M_xJacobian;
             }
 
-            onst vector_Type xJacobianWall() const //Luca
+            const vector_Type xJacobianWall() const //Luca
             {
                 return *M_xJacobianWall;
             }

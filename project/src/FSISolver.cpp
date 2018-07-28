@@ -41,8 +41,7 @@ namespace LifeV
              etarOld( vector_Type( Map_Eta, Unique ) ),
              exporterVtk( HiModExporterVtk( *(HM->modalspace()), uMeshSize, data->Nelements(), 1 ) )
   {
-    // Define radius and dRadius in FSI DATA
-    refMap->evaluateMapFSI( data->L()/(pdof - 1) /* h */, udof, radius, dRadius);
+    refMap->evaluateAxialMap( data->L()/(pdof - 1) /* h */, udof, data->Radius(), data->dRadius());
 
     block_row.resize( data->mx() + data->mr() + data->mtheta() + data->mp(), pdof );
     block_col.resize( data->mx() + data->mr() + data->mtheta() + data->mp(), pdof );
@@ -151,7 +150,7 @@ namespace LifeV
       r[i] += etar[i];
     }
     refMap->setRadius( r );
-    refMap->evaluateMapFSI( t );
+    refMap->evaluateAxialMap( t );
   }
   */
   /*
@@ -183,7 +182,7 @@ namespace LifeV
         cartesianGrid[i][j].resize(nQuadTheta);
         for (UInt k = 0; k < nQuadTheta; k++)
         {
-          std::get<0>(grid[i][j][k]) = refMap->nodes()[i];
+          std::get<0>(grid[i][j][k]) = data->L()/(pdof - 1) /* h */ *i;
           std::get<1>(grid[i][j][k]) = refMap->qrRho().quadPointCoor(j,0) * data->R();
           std::get<2>(grid[i][j][k]) = refMap->qrTheta().quadPointCoor(k,0) * data->theta();
         }
