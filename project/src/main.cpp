@@ -16,7 +16,7 @@
 #include <vector>
 #include <lifev/core/fem/QuadratureRule.hpp>
 
-#include "include/poiseuille.hpp" // animalata ma rgossa
+//#include "include/Poiseuille.hpp" // animalata ma rgossa
 
 #include <iostream>
 #include <stdexcept>
@@ -41,6 +41,64 @@ inline void file_exists (const std::string& name) {
       throw "The file cannot be found! \nInterupting the program";
     }
 }
+
+// -----------------------   data from poiseuille
+static Real fR( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
+{
+     return 1.; // Luca animalata
+}
+static Real fdR( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
+{
+     return 0;
+}
+
+Real Jr( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
+{
+    return 1. / fR( t, x, r, theta, 0 );
+}
+
+Real Jtheta( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
+{
+    return 1. / fR( t, x, r, theta, 0 );
+}
+
+Real Dr( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
+{
+    // REMARK. Dr is (-R'/R*r), but the r factor is included in modal space, so to factor the integrals.
+    return - fdR( t, x, r, theta, 0 ) / fR( t, x, r, theta, 0 );
+}
+
+Real Dtheta( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
+{
+    return 0;
+}
+
+Real Drtheta( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
+{
+    return 0;
+}
+
+Real Dthetar( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
+{
+     return 0;
+}
+
+// IMPORTANT: This is actually the inverse of the Jacobian, i.e. the shape factor which shows up in the integrals!
+Real Jacobian( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
+{
+    return fabs( 1. / ( Jr( t, x, r, theta, 0 ) * Jtheta( t, x, r, theta, 0 ) - Drtheta( t, x, r, theta, 0 ) * Dthetar( t, x, r, theta, 0 ) ) );
+}
+
+Real JacobianWall( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
+{
+    return fR( t, x, r, theta, 0 );
+}
+
+Real inverseRhat( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
+{
+    return fR( t, x, r, theta, 0 ) * r;
+}
+// ------------------------------------ END fctions from poiseuille
 
 
 int main( int argc, char* argv[] )
@@ -80,6 +138,7 @@ int main( int argc, char* argv[] )
   FSIData data( dataFile );
   data.printAll();
 
+
   // ---------- Define Fespaces/ModalSpaceCircular  ----------
   std::cout <<"Definition of NSModalSpaceCircular: ";
   boost::shared_ptr< mesh_Type > fullMeshPtr( new mesh_Type );
@@ -110,8 +169,8 @@ int main( int argc, char* argv[] )
                 const QuadratureRule* quadtheta = &quadRuleSeg32pt )
 */
 
-  ReferenceMap    refMap( Jr, Jtheta, Dr, Dtheta, Drtheta, Dthetar, Jacobian, JacobianWall, inverseRhat, uSpace->map(),
-                              &quadRuleSeg32pt, &quadRuleSeg64pt );
+  ReferenceMap   refMap( Jr, Jtheta, Dr, Dtheta, Drtheta, Dthetar, Jacobian, JacobianWall, inverseRhat, uSpace->map(),
+                              &quadRuleSeg32pt, &quadRuleFQSeg32pt );
 
   //ReferenceMap refMap( uNodes, data.R(), &quadRuleSeg32pt, &quadRuleFQSeg32pt );
   // Define the Modal Basis

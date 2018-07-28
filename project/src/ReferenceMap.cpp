@@ -317,7 +317,7 @@ namespace LifeV
     }// end evaluateAxialMap
 
 // -------------------------------- New FSI ------------------------------------
-
+/*
 ReferenceMap::
 ReferenceMap( const MBVector_type& nodes, const MBVector_type& radius, const QuadratureRule* quadrho, const QuadratureRule* quadtheta ) :
 M_nodes( nodes ), M_radius( radius ), M_numbNodes( M_nodes.size() ), M_quadruleRho( quadrho ), M_quadruleTheta( quadtheta )
@@ -475,7 +475,7 @@ setRadius( const MBVector_type& radius )
 {
     M_radius = radius;
     setRadiusPrime();
-}
+} */
 
 // -----------------------------------------------------------------------------
 
