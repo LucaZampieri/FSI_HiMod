@@ -651,7 +651,7 @@ addRhsFSI( const vector_ptrType& rhs, const Real& alpha, const Real& rho_s, cons
     }
 
     //Cycling on p-block : null force
-    for ( UInt k = 0; k != M_modalbasis->mtheta(); ++k )
+    for ( UInt k = 0; k != M_modalbasis->mp(); ++k )
     {
         {
             using namespace ExpressionAssembly;
