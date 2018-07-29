@@ -1,5 +1,7 @@
 /project/build/
 /project/output/
-*.o
 /project/main
+/project/output/plot/
+
+*.o
 *.exe
