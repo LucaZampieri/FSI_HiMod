@@ -1,5 +1,5 @@
 CXX = mpicxx
-CXXFLAGS = -std=c++11# -Wall
+CXXFLAGS = -std=c++11 -Wall -g
 
 MODULE_DIR = u/sw
 PKGS_DIR = u/sw/pkgs/toolchains/gcc-glibc/5/pkgs
@@ -87,4 +87,7 @@ clean :
 	$(RM) build/*
 
 distclean : clean
-	$(RM) $(EXE) output/*
+	$(RM) $(EXE) output/*.txt output/*.vtk
+
+outclean:
+	$(RM) output/*.txt output/*.vtk

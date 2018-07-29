@@ -612,6 +612,7 @@ addRhsFSI( const vector_ptrType& rhs, const Real& alpha, const Real& rho_s, cons
 
     }
 
+
     //Cycling on r-block
     for ( UInt k = 0; k != M_modalbasis->mr(); ++k )
     {
@@ -667,7 +668,7 @@ addRhsFSI( const vector_ptrType& rhs, const Real& alpha, const Real& rho_s, cons
     }
 
     return;
-}
+} // END addRhsFSI
 
 template< typename mesh_type, typename matrix_type, typename vector_type>
 void NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::
@@ -917,7 +918,7 @@ evaluateBaseWallGridFSI( const vector_type& fun )
 
 template< typename mesh_type, typename matrix_type, typename vector_type>
 vector_type NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::
-evaluateInitialVelocityWallFSI( const function_Type& ur0, const grid_type& grid, const Real& R )
+evaluateInitialVelocityWallFSI( const function_Type& ur0, const grid_type& grid, const function_Type& Radius )
 {
 	UInt nquadTheta = M_modalbasis->qrTheta()->nbQuadPt();
 
@@ -934,7 +935,8 @@ evaluateInitialVelocityWallFSI( const function_Type& ur0, const grid_type& grid,
 	{
 		for ( UInt ntheta( 0 ); ntheta != nquadTheta; ++ntheta ) // on quadrature node nquadTheta
 		{
-			fcoeff[ntheta + s*nquadTheta] = ur0( 0, std::get<0>(grid[s][0][ntheta]), R, std::get<2>(grid[s][0][ntheta]), 1 );
+			Real x_tmp = std::get<0>(grid[s][0][ntheta]); // temporary x used for the update
+			fcoeff[ntheta + s*nquadTheta] = ur0( 0, x_tmp , Radius(0,x_tmp,0,0,0), std::get<2>(grid[s][0][ntheta]) /* Theta*/ , 1 /*ID*/ ); // id useless here
 		}
 	}
 	return fcoeff;
