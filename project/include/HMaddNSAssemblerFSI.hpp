@@ -700,7 +700,7 @@ addBcFSI( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs, const R
 				rhs->setCoefficient( M_modalbasis->mx() * udof + j * udof + pdof - 1, 0 );
     }
 
-    for ( UInt j = 0; j != M_modalbasis->mr(); ++j )
+    for ( UInt j = 0; j != M_modalbasis->mtheta(); ++j )
     {
         systemMatrix->setCoefficient( M_modalbasis->mx() * udof + M_modalbasis->mr() * udof + j * udof, M_modalbasis->mx() * udof + M_modalbasis->mr() * udof + j * udof, 1e+30 );
         rhs->setCoefficient( M_modalbasis->mx() * udof + M_modalbasis->mr() * udof + j * udof, 0 );
