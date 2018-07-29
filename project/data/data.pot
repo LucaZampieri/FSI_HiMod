@@ -4,10 +4,10 @@
 
 [himod]
   drho    = 0
-  mx      = 5                # modes for Vx
-  mr      = 5                # modes for Vr
-  mtheta  = 5                # modes for Vtheta
-  mp      = 3                # modes for the pressure
+  mx      = 6                # modes for Vx
+  mr      = 6                # modes for Vr
+  mtheta  = 6                # modes for Vtheta
+  mp      = 4                # modes for the pressure
 [../]
 
 [mesh]
