@@ -18,16 +18,7 @@
 
 [fluid]
     [./physics]
-        mu        = 0.0279
         nu        = 0.0222
-        rho_f     = 1050
-        density   = 1.
-        Rin       = 0.5
-        Rout      = 0.5
-        occlusion = 0.45
-        deltaP    = 5.
-        z0        = 1.335
-        delta0    = 0.45
     [../]
     [./structure]
         L         = 3         # length of the cylinder
@@ -43,10 +34,26 @@
     T   = 1            # final time
 [../]
 
+[functions]
+    ux0 = 1
+    ur0 = 0
+    utheta0 = 0
+
+    Radius  = 1
+    dRadius = 0
+
+    p1 = 14000
+    p2 = 13000
+
+    fx = 0
+    fr = 0
+    ftheta = 0
+[../]
 [fixedPoint]
     PF_max  = 1000
-    tol    = 1e-4
+    tol     = 1e-4
 [../]
+
 
 [prec]
     prectype                     = Ifpack # Ifpack or ML
@@ -77,20 +84,4 @@
     start=0
     save=1
     multimesh=false
-[../]
-
-[functions]
-    ux0 = 1
-    ur0 = 0
-    utheta0 = 0
-
-    Radius  = 1
-    dRadius = 0
-
-    p1 = 14000
-    p2 = 13000
-
-    fx = 0
-    fr = 0
-    ftheta = 0
 [../]

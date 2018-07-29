@@ -63,7 +63,7 @@ class FSIData
     {
       return D_L;
     }
-    
+
     const Real& rho_s() const
     {
       return D_rho_s;
@@ -72,19 +72,7 @@ class FSIData
     {
       return D_h_s;
     }
-    const Real& E() const
-    {
-      return D_E;
-    }
-    const Real& csi() const
-    {
-      return D_csi;
-    }
 
-    const Real& rho_f() const
-    {
-      return D_rho_f;
-    }
     const Real& nu() const
     {
       return D_nu;
@@ -173,11 +161,8 @@ class FSIData
     Real D_L;                 // length of the cylinder
     Real D_rho_s;             // density of the structure
     Real D_h_s;               // thickness of the structure
-    Real D_E;                 // Young modulus
-    Real D_csi;               // Poisson modulus
-    Real D_e;                   // Coefficient structure
+    Real D_e;                 // Coefficient structure
 
-    Real D_rho_f;             // density of the fluid
     Real D_nu;                // dynamical viscosity of the fluid
 
     std::string D_ux0_str;      // string of the initial axial velocity

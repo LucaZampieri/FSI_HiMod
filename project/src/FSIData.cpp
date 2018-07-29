@@ -13,6 +13,8 @@ FSIData::FSIData( GetPot dataFile ) :
          D_mtheta( dataFile( "himod/mtheta", 10 ) ),
          D_mp( dataFile( "himod/mp", 8 ) ),
          D_Nelements( dataFile( "mesh/num_elements", 10 ) ),
+
+         // time
          D_t0( dataFile( "time/t0", 0. ) ),
          D_dt( dataFile( "time/dt", 0.1 ) ),
          D_alpha( 1./D_dt ),
@@ -23,18 +25,16 @@ FSIData::FSIData( GetPot dataFile ) :
          D_rho_s( dataFile( "fluid/structure/rho_s", 1. ) ),
          D_h_s( dataFile( "fluid/structure/h_s", 0.1 ) ),
          D_e( dataFile( "fluid/structure/e", 4.e5 ) ),
-         D_csi( dataFile( "fluid/structure/csi", 1. ) ),
-         D_rho_f( dataFile( "fluid/physics/rho_f", 1. ) ),
          D_nu( dataFile( "fluid/physics/nu", 1. ) ),
 
-         D_ux0_str( dataFile( "functions/ux0", "0" ) ),
-         D_ur0_str( dataFile( "functions/ur0", "0" ) ),
+         D_ux0_str(     dataFile( "functions/ux0",     "0" ) ),
+         D_ur0_str(     dataFile( "functions/ur0",     "0" ) ),
          D_utheta0_str( dataFile( "functions/utheta0", "0" ) ),
-         D_p1_str( dataFile( "functions/p1", "0" ) ),
-         D_p2_str( dataFile( "functions/p2", "0" ) ),
-         D_fx_str( dataFile( "functions/fx", "0" ) ),
-         D_fr_str( dataFile( "functions/fr", "0" ) ),
-         D_ftheta_str( dataFile( "functions/ftheta", "0" ) ),
+         D_p1_str(      dataFile( "functions/p1",      "0" ) ),
+         D_p2_str(      dataFile( "functions/p2",      "0" ) ),
+         D_fx_str(      dataFile( "functions/fx",      "0" ) ),
+         D_fr_str(      dataFile( "functions/fr",      "0" ) ),
+         D_ftheta_str(  dataFile( "functions/ftheta",  "0" ) ),
          D_Radius_str(  dataFile( "functions/Radius" , "0" ) ),
          D_dRadius_str( dataFile( "functions/dRadius", "0" ) ),
 
@@ -67,16 +67,15 @@ void FSIData::printAll() const
   std::cout <<"dt: " <<D_dt <<std::endl;
   std::cout <<"T: "  <<D_T  <<std::endl;
 
-  std::cout << "radius and dradius blahblahblah"<<std::endl;
+  std::cout << "Radius "  << D_Radius_str << std::endl;
+  std::cout << "dRadius " << D_dRadius_str << std::endl;
 
-  std::cout <<"theta: " <<D_theta <<std::endl;
+
   std::cout <<"L: " <<D_L <<std::endl;
   std::cout <<"rho_s: " <<D_rho_s <<std::endl;
   std::cout <<"h_s: " <<D_h_s <<std::endl;
-  std::cout <<"E: " <<D_E <<std::endl;
-  std::cout <<"csi: " <<D_csi <<std::endl;
+  std::cout <<"e: " <<D_e <<std::endl;
 
-  std::cout <<"rho_f: " <<D_rho_f <<std::endl;
   std::cout <<"nu: " <<D_nu <<std::endl;
 
   std::cout <<"ux0 = " <<D_ux0_str <<std::endl;
