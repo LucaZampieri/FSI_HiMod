@@ -135,6 +135,50 @@ class FSIData
       return D_e;
     }
 
+    function_Type Jr() const
+    {
+      return D_Jr;
+    }
+
+    function_Type Jtheta() const
+    {
+      return D_Jtheta;
+    }
+
+    function_Type Dr() const
+    {
+      return D_Dr;
+    }
+
+    function_Type Dtheta() const
+    {
+      return D_Dtheta;
+    }
+
+    function_Type Drtheta() const
+    {
+      return D_Drtheta;
+    }
+
+    function_Type Dthetar() const
+    {
+      return D_Dthetar;
+    }
+
+    function_Type Jacobian() const
+    {
+      return D_Jacobian;
+    }
+
+    function_Type JacobianWall() const
+    {
+      return D_JacobianWall;
+    }
+
+    function_Type inverseRhat() const
+    {
+      return D_inverseRhat;
+    }
 
 
     // Constructor
@@ -193,6 +237,16 @@ class FSIData
     function_Type D_fr;       // volumetric radial force
     function_Type D_ftheta;   // volumetric angular force
 
+    // Functions for the reference map;
+    function_Type D_Jr;
+    function_Type D_Jtheta;
+    function_Type D_Dr;
+    function_Type D_Dtheta;
+    function_Type D_Drtheta;
+    function_Type D_Dthetar;
+    function_Type D_Jacobian;
+    function_Type D_JacobianWall;
+    function_Type D_inverseRhat;
 
 };
 

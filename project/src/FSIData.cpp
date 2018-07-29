@@ -47,7 +47,17 @@ FSIData::FSIData( GetPot dataFile ) :
          D_ftheta(  muparser_function( D_ftheta_str ) ),
          D_Radius(  muparser_function( D_Radius_str ) ),
          D_dRadius( muparser_function( D_dRadius_str ) ),
-         D_theta( 2*PI )
+         D_theta( 2*PI ),
+
+         D_Jr( [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return 1. / D_Radius(t,x,r,theta,0); } ),
+         D_Jtheta( [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return 1. / D_Radius(t,x,r,theta,0); } ),
+         D_Dr( [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return - D_dRadius(t,x,r,theta,0) / D_Radius(t,x,r,theta,0); } ),
+         D_Dtheta( [] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return 0; } ),
+         D_Drtheta( [] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return 0; } ),
+         D_Dthetar( [] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return 0; } ),
+         D_Jacobian( [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return fabs( 1. / ( D_Jr(t,x,r,theta,0) * D_Jtheta(t,x,r,theta,0) - D_Drtheta(t,x,r,theta,0) * D_Dthetar(t,x,r,theta,0) ) ); } ),
+         D_JacobianWall( [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return D_Radius(t,x,r,theta,0); } ),
+         D_inverseRhat( [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return D_Radius(t,x,r,theta,0)*r; } )
 {
   std::cout <<"Constructed FSIData" <<std::endl;
 }

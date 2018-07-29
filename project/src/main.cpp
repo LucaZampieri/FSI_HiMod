@@ -45,63 +45,6 @@ inline void file_exists (const std::string& name) {
     }
 }
 
-// -----------------------   data from poiseuille
-static Real fR( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
-{
-     return 1.; // Luca animalata
-}
-static Real fdR( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
-{
-     return 0;
-}
-
-Real Jr( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
-{
-    return 1. / fR( t, x, r, theta, 0 );
-}
-
-Real Jtheta( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
-{
-    return 1. / fR( t, x, r, theta, 0 );
-}
-
-Real Dr( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
-{
-    // REMARK. Dr is (-R'/R*r), but the r factor is included in modal space, so to factor the integrals.
-    return - fdR( t, x, r, theta, 0 ) / fR( t, x, r, theta, 0 );
-}
-
-Real Dtheta( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
-{
-    return 0;
-}
-
-Real Drtheta( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
-{
-    return 0;
-}
-
-Real Dthetar( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
-{
-     return 0;
-}
-
-// IMPORTANT: This is actually the inverse of the Jacobian, i.e. the shape factor which shows up in the integrals!
-Real Jacobian( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
-{
-    return fabs( 1. / ( Jr( t, x, r, theta, 0 ) * Jtheta( t, x, r, theta, 0 ) - Drtheta( t, x, r, theta, 0 ) * Dthetar( t, x, r, theta, 0 ) ) );
-}
-
-Real JacobianWall( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
-{
-    return fR( t, x, r, theta, 0 );
-}
-
-Real inverseRhat( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
-{
-    return fR( t, x, r, theta, 0 ) * r;
-}
-// ------------------------------------ END fctions from poiseuille
 
 
 int main( int argc, char* argv[] )
@@ -157,26 +100,12 @@ int main( int argc, char* argv[] )
     if (i != data.Nelements())
       uNodes[2*i+1] = ( (uSpace->mesh()->pointList)(i+1).x() + (uSpace->mesh()->pointList)(i).x() ) / 2;
   }
-  // Define the map to the reference domain
-  /*
-  onst function_Type& jr,
-                const function_Type& jtheta,
-                const function_Type& dr,
-                const function_Type& dtheta,
-                const function_Type& drtheta,
-                const function_Type& dthetar,
-                const function_Type& jacobian,
-                const function_Type& jacobianWall, // Luca
-                const function_Type& inverseRhat,
-                const QuadratureRule* quadrho = &quadRuleSeg32pt,
-                const QuadratureRule* quadtheta = &quadRuleSeg32pt )
-*/
+
 
   MapEpetra epetraMap( data.Nelements()*2+1, Comm );
-  ReferenceMap   refMap( Jr, Jtheta, Dr, Dtheta, Drtheta, Dthetar, Jacobian, JacobianWall, inverseRhat, epetraMap,
+  ReferenceMap   refMap( data.Jr(), data.Jtheta(), data.Dr(), data.Dtheta(), data.Drtheta(), data.Dthetar(), data.Jacobian(), data.JacobianWall(), data.inverseRhat(), epetraMap,
                               &quadRuleSeg32pt, &quadRuleFQSeg32pt );
-  // , uSpace->map()
-  //ReferenceMap refMap( uNodes, data.R(), &quadRuleSeg32pt, &quadRuleFQSeg32pt );
+
   // Define the Modal Basis
   boost::shared_ptr<NSModalSpaceCircular> MB( new NSModalSpaceCircular(
       data.Radius(), data.dRadius(), data.theta(), data.mx(), data.mr(), data.mtheta(), data.mp(),
