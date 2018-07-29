@@ -2,7 +2,7 @@
   verbose = 1
 [../]
 
-[himod]
+[himod] # the total number of modes should be even
   drho    = 0
   mx      = 6                # modes for Vx
   mr      = 6                # modes for Vr
@@ -21,14 +21,14 @@
         nu        = 0.035     # cinematic viscosity
     [../]
     [./structure]
-        case_radius = 4         # 0 to use the functions Radius and dRadius | 1 Stenosis | 2 Aneurysm
+        case_radius = 3         # 0 to use the functions Radius and dRadius | 1 Stenosis | 2 Aneurysm | 3 Cone | 4 internal deformation
         L           = 20       # length of the cylinder
         occlusion   = 0.45      # occlusion for case 1 stenosis (also used in case 2)
         rho_s       = 1         # Density (specific mass) of the membrane (Wall)
         h_s         = 0.05      # Width of the membrane (Wall)
-        e           = 4.e2      # e = Young * width / ((1 - poisson*poisson) * R*R)
-        Rin         = 0.5       # input radius for cases 3&4
-        Rou         = 1.5       # output radius for cases 3&4
+        e           = 4.e5      # e = Young * width / ((1 - poisson*poisson) * R*R)
+        Rin         = 1.5       # input radius for cases 3&4
+        Rou         = 0.5       # output radius for cases 3&4
         Z0          = 5.        # middle length for case 4
         delta0      = 0.45      # ??? to see
     [../]
