@@ -15,9 +15,9 @@ class muparser_function
 private :
 
   Real tVar;
-  Real xVar;
+  Real xVar; // x
   Real rVar;
-  Real aVar;
+  Real aVar; // angle?
   Real iVar;
 
   mu::Parser p;

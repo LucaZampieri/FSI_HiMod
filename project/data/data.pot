@@ -31,7 +31,7 @@
 [time]
     t0  = 0            # initial time
     dt  = 0.25         # time step
-    T   = 1            # final time
+    T   = 2           # final time
 [../]
 
 [functions]
@@ -39,8 +39,8 @@
     ur0 = 0
     utheta0 = 0
 
-    Radius  = 1
-    dRadius = 0
+    Radius  = 1+0.1*x+0.1*a+0.1*x # Radius function
+    dRadius = 0*x+0.1
 
     p1 = 14000
     p2 = 13000

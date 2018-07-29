@@ -20,12 +20,11 @@ FSIData::FSIData( GetPot dataFile ) :
          D_alpha( 1./D_dt ),
          D_T( dataFile( "time/T", 1. ) ),
 
-         D_theta( 2*PI ),
-         D_L( dataFile( "fluid/structure/L", 5. ) ),
+         D_L(     dataFile( "fluid/structure/L", 5. ) ),
          D_rho_s( dataFile( "fluid/structure/rho_s", 1. ) ),
-         D_h_s( dataFile( "fluid/structure/h_s", 0.1 ) ),
-         D_e( dataFile( "fluid/structure/e", 4.e5 ) ),
-         D_nu( dataFile( "fluid/physics/nu", 1. ) ),
+         D_h_s(   dataFile( "fluid/structure/h_s", 0.1 ) ),
+         D_e(     dataFile( "fluid/structure/e", 4.e5 ) ),
+         D_nu(    dataFile( "fluid/physics/nu", 1. ) ),
 
          D_ux0_str(     dataFile( "functions/ux0",     "0" ) ),
          D_ur0_str(     dataFile( "functions/ur0",     "0" ) ),
@@ -47,7 +46,8 @@ FSIData::FSIData( GetPot dataFile ) :
          D_fr( muparser_function( D_fr_str ) ),
          D_ftheta(  muparser_function( D_ftheta_str ) ),
          D_Radius(  muparser_function( D_Radius_str ) ),
-         D_dRadius( muparser_function( D_dRadius_str ) )
+         D_dRadius( muparser_function( D_dRadius_str ) ),
+         D_theta( 2*PI )
 {
   std::cout <<"Constructed FSIData" <<std::endl;
 }
