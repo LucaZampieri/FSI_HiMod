@@ -466,6 +466,7 @@ public:
 
     typedef std::vector<std::vector<std::vector<std::tuple<Real, Real, Real>>>> grid_type;
     typedef VectorEpetraStructured vector_Type;
+    typedef std::function<Real ( const Real& )> oneDFunction_Type;
 
     void addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& nu, const Real& rho_s, const Real& h_s, const Real& e, ReferenceMap& refMap, const Real& t, const Real& alpha );
     void addRhsFSI( const vector_ptrType& rhs, const Real& alpha, const Real& rho_s, const Real& h_s, const Real& e, const vector_Type& f, const vector_Type& u_old, const vector_Type& urWall_old, const vector_Type& etar_old );
@@ -474,7 +475,7 @@ public:
     vector_type evaluateForce3DGridFSI( const function_Type& fx, const function_Type& fr, const function_Type& ftheta, const Real& t, const grid_type& grid );
     vector_type evaluateBase3DGridFSI( const vector_type& fun );
     vector_type evaluateBaseWallGridFSI( const vector_type& fun );
-    vector_type evaluateInitialVelocityWallFSI( const function_Type& ur0, const grid_type& grid, const Real& R );
+    vector_type evaluateInitialVelocityWallFSI( const function_Type& ur0, const grid_type& grid, const function_Type& Radius );
 
 // -----------------------------------------------------------------------------
 

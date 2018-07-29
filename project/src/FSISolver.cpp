@@ -69,7 +69,7 @@ namespace LifeV
     *Solution *= 0;
 
     solution_3DOld = HM->evaluateForce3DGridFSI( data->ux0(), data->ur0(), data->utheta0(), 0, grid );
-    urWallOld = HM->evaluateInitialVelocityWallFSI( data->ur0(), grid, data->R() );
+    urWallOld = HM->evaluateInitialVelocityWallFSI( data->ur0(), grid, data->Radius() );
   }
 
   void FSISolver::solveSystem(const Real& t)
@@ -182,8 +182,9 @@ namespace LifeV
         cartesianGrid[i][j].resize(nQuadTheta);
         for (UInt k = 0; k < nQuadTheta; k++)
         {
-          std::get<0>(grid[i][j][k]) = data->L()/(pdof - 1) /* h */ *i;
-          std::get<1>(grid[i][j][k]) = refMap->qrRho().quadPointCoor(j,0) * data->R();
+          Real x_tmp = data->L()/(pdof - 1) /* h */ *i; // temporary x to update grid
+          std::get<0>(grid[i][j][k]) = x_tmp;
+          std::get<1>(grid[i][j][k]) = refMap->qrRho().quadPointCoor(j,0) * data->Radius()(0,x_tmp,0,0,0);
           std::get<2>(grid[i][j][k]) = refMap->qrTheta().quadPointCoor(k,0) * data->theta();
         }
       }

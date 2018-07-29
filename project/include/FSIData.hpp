@@ -20,8 +20,7 @@ class FSIData
 
     static constexpr Real PI = std::atan(1.)*4; // pi greco
     typedef std::function<Real ( const Real&, const Real&, const Real&, const Real&, const ID& )> function_Type;
-    typedef std::function<Real ( const Real& )> timeFunction_Type;
-    typedef std::function<Real ( const Real& )> radiusFunction_Type;
+    typedef std::function<Real ( const Real& )> oneDFunction_Type;
 
     // All the functions that return the data
     const UInt& mx() const
@@ -64,9 +63,7 @@ class FSIData
     {
       return D_L;
     }
-    const Real& R() const{
-      return D_R;
-    }
+    
     const Real& rho_s() const
     {
       return D_rho_s;
@@ -106,11 +103,11 @@ class FSIData
       return D_utheta0;
     }
 
-    const timeFunction_Type& p1() const
+    const oneDFunction_Type& p1() const
     {
       return D_p1;
     }
-    const timeFunction_Type& p2() const
+    const oneDFunction_Type& p2() const
     {
       return D_p2;
     }
@@ -174,7 +171,6 @@ class FSIData
 
     Real D_theta;             // 2*pigreco
     Real D_L;                 // length of the cylinder
-    Real D_R;                 // radius of the cylinder
     Real D_rho_s;             // density of the structure
     Real D_h_s;               // thickness of the structure
     Real D_E;                 // Young modulus
@@ -202,14 +198,16 @@ class FSIData
     function_Type D_ur0;      // initial radial velocity
     function_Type D_utheta0;  // initial angular velocity
 
-    timeFunction_Type D_p1;   // pressure at the inlet
-    timeFunction_Type D_p2;   // pressure at the outlet
+    oneDFunction_Type D_p1;        // pressure at the inlet
+    oneDFunction_Type D_p2;        // pressure at the outlet
+
+    function_Type D_Radius;   // radius (fct of x)
+    function_Type D_dRadius;  // Derivative of the radius wrt x
 
     function_Type D_fx;       // volumetric axial force
     function_Type D_fr;       // volumetric radial force
     function_Type D_ftheta;   // volumetric angular force
-    function_Type D_Radius;   // radius (fct of x)
-    function_Type D_dRadius;  // Derivative of the radius wrt x
+
 
 };
 
