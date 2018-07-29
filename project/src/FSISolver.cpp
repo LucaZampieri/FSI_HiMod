@@ -259,68 +259,18 @@ namespace LifeV
   void FSISolver::save( const Real& t, const UInt& iter ) const
   {
 
-    std::ofstream solution( "output/Iteration" + std::to_string(iter) + ".txt" );
+      std::ofstream solution( "output/Iteration" + std::to_string(iter) + ".txt" );
 
-    /*
-    solution <<"SOLUTION OF THE FLUID STRUCTURE INTERACTION PROBLEM: t = " <<t <<" s\n" <<std::endl;
-
-    for (UInt i = 0; i < udof; i++)
-    {
-      for (UInt j = 0; j < nQuadRho; j++)
+      for (UInt i = 0; i < udof; i++)
       {
-        for (UInt k = 0; k < nQuadTheta; k++)
-        {
-          solution <<"Coordinates: x = " <<std::get<0>(cartesianGrid[i][j][k])
-                              <<", y = " <<std::get<1>(cartesianGrid[i][j][k])
-                              <<", z = " <<std::get<2>(cartesianGrid[i][j][k])
-                             <<", (r = " <<std::get<1>(grid[i][j][k])
-                          <<", theta = " <<std::get<2>(grid[i][j][k]) <<")" <<std::endl;
-          solution <<"Solution: ux = " <<ux[i][j][k]
-                           <<", uy = " <<uy[i][j][k]
-                           <<", uz = " <<uz[i][j][k]
-                           <<", (ur = " <<ur[i][j][k]
-                        <<", utheta = " <<utheta[i][j][k] <<")"
-                             <<", p = " <<p[i][j][k] <<std::endl;
-          solution <<std::endl;
-        }
+          Real x_tmp = std::get<0>(cartesianGrid[i][0][0]);
+          solution <<x_tmp <<" "
+                   <<data->Radius()(0,x_tmp,0,0,0) <<" "
+	                 <<etar[i] <<" "
+	                 <<std::endl;
       }
-    }
 
-    solution <<"Radial displacemet of the structure:\n" <<std::endl;
-    for (UInt i = 0; i < udof; i++)
-    {
-      solution <<"x = " <<std::get<0>(grid[i][0][0]) <<"\t" <<"etar = " <<etar[i] <<std::endl;
-    }
-  	*/
-  	for (UInt i = 0; i < udof; i++)
-      {
-        for (UInt j = 0; j < nQuadRho; j++)
-        {
-          for (UInt k = 0; k < nQuadTheta; k++)
-          {
-            solution <<std::get<0>(cartesianGrid[i][j][k]) <<" "
-          		   <<std::get<1>(cartesianGrid[i][j][k]) <<" "
-                     <<std::get<2>(cartesianGrid[i][j][k]) <<" "
-                     <<std::get<1>(grid[i][j][k]) <<" "
-                     <<std::get<2>(grid[i][j][k]) <<" "
-                     <<ux[i][j][k] <<" "
-                     <<uy[i][j][k] <<" "
-                     <<uz[i][j][k] <<" "
-                     <<ur[i][j][k] <<" "
-                     <<utheta[i][j][k] <<" "
-                     <<p[i][j][k]  <<" "
-                     <<std::endl;
-          }
-        }
-      }
-    for (UInt i = 0; i < udof; i++)
-    {
-      solution <<std::get<0>(cartesianGrid[i][0][0]) <<" "
-	           <<etar[i] <<" "
-	           <<std::endl;
-    }
-
-    solution.close();
+      solution.close();
   }
 
 }
