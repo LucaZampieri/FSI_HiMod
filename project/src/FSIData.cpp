@@ -45,8 +45,6 @@ FSIData::FSIData( GetPot dataFile ) :
          D_fx( muparser_function( D_fx_str ) ),
          D_fr( muparser_function( D_fr_str ) ),
          D_ftheta(  muparser_function( D_ftheta_str ) ),
-         D_Radius(  muparser_function( D_Radius_str ) ),
-         D_dRadius( muparser_function( D_dRadius_str ) ),
          D_theta( 2*PI ),
 
          D_Jr( [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return 1. / D_Radius(t,x,r,theta,0); } ),
@@ -60,6 +58,23 @@ FSIData::FSIData( GetPot dataFile ) :
          D_inverseRhat( [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return D_Radius(t,x,r,theta,0)*r; } )
 {
   std::cout <<"Constructed FSIData" <<std::endl;
+
+    int case_radius = dataFile( "fluid/structure/case_radius", 0 );
+    switch (case_radius)
+    {
+        case 0:
+            D_Radius = muparser_function( D_Radius_str );
+            D_dRadius = muparser_function( D_dRadius_str );
+        break;
+        case 1:
+            D_Radius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return 1 - /*occlusion*/0.45 * exp( - ( x - D_L / 2 ) * ( x - D_L / 2 ) ); };
+            D_dRadius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return 2 * ( x - D_L / 2 ) * /*occlusion*/0.45 * exp( - ( x - D_L / 2 ) * ( x - D_L / 2 ) ); };
+        break;
+        case 2:
+            D_Radius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return 0.5 + /*occlusion*/0.45 * exp( - ( x - D_L / 2 ) * ( x - D_L / 2 ) ); };
+            D_dRadius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return - 2 * ( x - D_L / 2 ) * /*occlusion*/0.45 * exp( - ( x - D_L / 2 ) * ( x - D_L / 2 ) ); };
+        break;
+    }
 }
 
 void FSIData::printAll() const

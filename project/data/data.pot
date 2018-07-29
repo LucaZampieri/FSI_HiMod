@@ -21,10 +21,12 @@
         nu        = 0.035     # cinematic viscosity
     [../]
     [./structure]
-        L         = 100         # length of the cylinder
-        rho_s     = 1         # Density (specific mass) of the membrane (Wall)
-        h_s       = 0.05      # Width of the membrane (Wall)
-        e         = 4.e2      # e = Young * width / ((1 - poisson*poisson) * R*R)
+        case_radius = 1         # 0 to use the functions Radius and dRadius | 1 Stenosis | 2 Aneurysm
+        L           = 100       # length of the cylinder
+        occlusion   = 1         # occlusion for case 1 stenosis
+        rho_s       = 1         # Density (specific mass) of the membrane (Wall)
+        h_s         = 0.05      # Width of the membrane (Wall)
+        e           = 4.e2      # e = Young * width / ((1 - poisson*poisson) * R*R)
     [../]
 [../]
 
