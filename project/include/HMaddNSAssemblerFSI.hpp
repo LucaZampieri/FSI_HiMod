@@ -686,7 +686,7 @@ addBcFSI( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs, const R
         M_modalbasis->compute_bL( k, p2, BL );
 
         rhs->setCoefficient( k *udof,
-                             ( *rhs )( k *udof ) - B0 );
+                             ( *rhs )( k *udof ) + B0 );
         rhs->setCoefficient( ( k + 1 ) *udof - 1,
                              ( *rhs )( ( k + 1 ) *udof - 1 ) + BL );
     }

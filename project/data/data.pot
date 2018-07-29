@@ -11,7 +11,7 @@
 [../]
 
 [mesh]
-    num_elements        = 50 # num of elements in x-discretization
+    num_elements        = 15 # num of elements in x-discretization
     Poly_type_velocity  = P2
     Poly_type_pressure  = P1
 [../]
@@ -21,32 +21,32 @@
         nu        = 0.035     # cinematic viscosity
     [../]
     [./structure]
-        L         = 100         # length of the cylinder
+        L         = 500         # length of the cylinder
         rho_s     = 1         # Density (specific mass) of the membrane (Wall)
-        h_s       = 0.05      # Width of the membrane (Wall)
-        e         = 4.e2      # e = Young * width / ((1 - poisson*poisson) * R*R)
+        h_s       = 0.01      # Width of the membrane (Wall)
+        e         = 4.e5      # e = Young * width / ((1 - poisson*poisson) * R*R)
     [../]
 [../]
 
 [time]
-    t0  = 0.03           # initial time
-    dt  = 0.02           # time step
-    T   = 0.1            # final time
+    t0  = 0.0           # initial time
+    dt  = 0.05           # time step
+    T   = 2            # final time
 [../]
 
 [functions]
-    ux0 = 3
-    ur0 = 0     #100*sin(t*100*2*3.14)
+    ux0 = 30000000
+    ur0 = 0 #10     #100*sin(t*100*2*3.14)
     utheta0 = 0
 
     Radius  = 1 # Radius function
     dRadius = 0
 
-    p1 = 5
+    p1 = 5000 #*t
     p2 = 0
 
     fx     = 0                           #1000*sin(t)
-    fr     = 50000*1*x    #2000*t
+    fr     = 0       #50000*1*x    #2000*t
     ftheta = 0                           #1000*cos(t)
 [../]
 
