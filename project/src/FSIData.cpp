@@ -7,6 +7,7 @@ namespace LifeV
 {
 
 FSIData::FSIData( GetPot dataFile ) :
+         // HiMod
          D_mx( dataFile( "himod/mx", 10 ) ),
          D_mr( dataFile( "himod/mr", 10 ) ),
          D_mtheta( dataFile( "himod/mtheta", 10 ) ),
@@ -17,16 +18,14 @@ FSIData::FSIData( GetPot dataFile ) :
          D_alpha( 1./D_dt ),
          D_T( dataFile( "time/T", 1. ) ),
 
-         D_theta( dataFile( "fluid/structure/theta", 2*PI ) ),
+         D_theta( 2*PI ),
          D_L( dataFile( "fluid/structure/L", 5. ) ),
-         D_R( dataFile( "fluid/structure/R", 1. ) ),
          D_rho_s( dataFile( "fluid/structure/rho_s", 1. ) ),
          D_h_s( dataFile( "fluid/structure/h_s", 0.1 ) ),
-         D_E( dataFile( "fluid/structure/E", 1. ) ),
+         D_e( dataFile( "fluid/structure/e", 4.e5 ) ),
          D_csi( dataFile( "fluid/structure/csi", 1. ) ),
          D_rho_f( dataFile( "fluid/physics/rho_f", 1. ) ),
          D_nu( dataFile( "fluid/physics/nu", 1. ) ),
-         D_e( D_E * D_h_s / ((1 - D_csi*D_csi) * D_R*D_R)),
 
          D_ux0_str( dataFile( "functions/ux0", "0" ) ),
          D_ur0_str( dataFile( "functions/ur0", "0" ) ),
@@ -49,7 +48,9 @@ FSIData::FSIData( GetPot dataFile ) :
          D_ftheta(  muparser_function( D_ftheta_str ) ),
          D_Radius(  muparser_function( D_Radius_str ) ),
          D_dRadius( muparser_function( D_dRadius_str ) )
-{std::cout <<"Constructed FSIData" <<std::endl;}
+{
+  std::cout <<"Constructed FSIData" <<std::endl;
+}
 
 void FSIData::printAll() const
 {
@@ -64,13 +65,12 @@ void FSIData::printAll() const
 
   std::cout <<"t0: " <<D_t0 <<std::endl;
   std::cout <<"dt: " <<D_dt <<std::endl;
-  std::cout <<"T: " <<D_T <<std::endl;
+  std::cout <<"T: "  <<D_T  <<std::endl;
 
   std::cout << "radius and dradius blahblahblah"<<std::endl;
 
   std::cout <<"theta: " <<D_theta <<std::endl;
   std::cout <<"L: " <<D_L <<std::endl;
-  std::cout <<"R: " <<D_R <<std::endl;
   std::cout <<"rho_s: " <<D_rho_s <<std::endl;
   std::cout <<"h_s: " <<D_h_s <<std::endl;
   std::cout <<"E: " <<D_E <<std::endl;

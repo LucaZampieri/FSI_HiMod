@@ -3,17 +3,15 @@
 [../]
 
 [himod]
-  rho     = 1.0
   drho    = 0
-  mx      = 5
-  mr      = 5
-  mtheta  = 5
-  mp      = 3
+  mx      = 3 # modes for Vx
+  mr      = 3 # modes for Vr
+  mtheta  = 3 # modes for Vtheta
+  mp      = 3 # modes for the pressure
 [../]
 
 [mesh]
-    num_elements        = 12
-    lx                  = 3
+    num_elements        = 30 # num of elements in x-discretization
     Poly_type_velocity  = P2
     Poly_type_pressure  = P1
 [../]
@@ -32,19 +30,17 @@
         delta0    = 0.45
     [../]
     [./structure]
-        L         = 3
-        R         = 0.5
-        rho_s     = 1
-        h_s       = 0.05
-        E         = 1000
-        csi       = 0.3
+        L         = 3         # length of the cylinder
+        rho_s     = 1         # Density (specific mass) of the membrane (Wall)
+        h_s       = 0.05      # Width of the membrane (Wall)
+        e         = 5.e5      # e = Young * width / ((1 - poisson*poisson) * R*R)
     [../]
 [../]
 
 [time]
-    t0  = 0
-    dt  = 0.25
-    T   = 1
+    t0  = 0            # initial time
+    dt  = 0.25         # time step
+    T   = 1            # final time
 [../]
 
 [fixedPoint]
