@@ -48,7 +48,7 @@ public :
       { std::cerr << e.GetMsg () << std::endl; }
   };
 
-  Real operator() (Real x, Real r, Real a, Real t, Real i)
+  Real operator() (Real t, Real x, Real r, Real a, Real i)
   {
     Real y;
 

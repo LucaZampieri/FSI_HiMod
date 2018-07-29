@@ -39,7 +39,7 @@
     ur0 = 0
     utheta0 = 0
 
-    Radius  = 1+0.1*x+0.1*a+0.1*x # Radius function
+    Radius  = 1+0.1*x # Radius function
     dRadius = 0*x+0.1
 
     p1 = 14000
