@@ -21,30 +21,27 @@
         nu        = 0.035     # cinematic viscosity
     [../]
     [./structure]
-<<<<<<< HEAD
-        L         = 500         # length of the cylinder
-        rho_s     = 1         # Density (specific mass) of the membrane (Wall)
-        h_s       = 0.01      # Width of the membrane (Wall)
-        e         = 4.e5      # e = Young * width / ((1 - poisson*poisson) * R*R)
-=======
-        case_radius = 1         # 0 to use the functions Radius and dRadius | 1 Stenosis | 2 Aneurysm
-        L           = 100       # length of the cylinder
-        occlusion   = 1         # occlusion for case 1 stenosis
+        case_radius = 4         # 0 to use the functions Radius and dRadius | 1 Stenosis | 2 Aneurysm
+        L           = 20       # length of the cylinder
+        occlusion   = 0.45      # occlusion for case 1 stenosis (also used in case 2)
         rho_s       = 1         # Density (specific mass) of the membrane (Wall)
         h_s         = 0.05      # Width of the membrane (Wall)
         e           = 4.e2      # e = Young * width / ((1 - poisson*poisson) * R*R)
->>>>>>> 509fb6cfe747a5973524ed381064f11f6a8e02d0
+        Rin         = 0.5       # input radius for cases 3&4
+        Rou         = 1.5       # output radius for cases 3&4
+        Z0          = 5.        # middle length for case 4
+        delta0      = 0.45      # ??? to see
     [../]
 [../]
 
 [time]
     t0  = 0.0           # initial time
-    dt  = 0.05           # time step
-    T   = 2            # final time
+    dt  = 0.03           # time step
+    T   = 0.1            # final time
 [../]
 
 [functions]
-    ux0 = 30000000
+    ux0 = 30
     ur0 = 0 #10     #100*sin(t*100*2*3.14)
     utheta0 = 0
 

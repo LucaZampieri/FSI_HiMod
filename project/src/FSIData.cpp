@@ -20,11 +20,18 @@ FSIData::FSIData( GetPot dataFile ) :
          D_alpha( 1./D_dt ),
          D_T( dataFile( "time/T", 1. ) ),
 
-         D_L(     dataFile( "fluid/structure/L", 5. ) ),
-         D_rho_s( dataFile( "fluid/structure/rho_s", 1. ) ),
-         D_h_s(   dataFile( "fluid/structure/h_s", 0.1 ) ),
-         D_e(     dataFile( "fluid/structure/e", 4.e5 ) ),
-         D_nu(    dataFile( "fluid/physics/nu", 1. ) ),
+         D_L(        dataFile( "fluid/structure/L", 5. ) ),
+         D_rho_s(    dataFile( "fluid/structure/rho_s", 1. ) ),
+         D_h_s(      dataFile( "fluid/structure/h_s", 0.1 ) ),
+         D_e(        dataFile( "fluid/structure/e", 4.e5 ) ),
+         D_occlusion(dataFile( "fluid/structure/occlusion", 0.45 ) ),
+         D_nu(       dataFile( "fluid/physics/nu", 1. ) ),
+
+         // Structure
+         D_Rin(       dataFile( "fluid/structure/Rin" , 1. ) ),
+         D_Rout(      dataFile( "fluid/structure/Rout", 1. ) ),
+         D_Z0(        dataFile( "fluid/structure/Z0"  , 1. ) ),
+         D_delta0(    dataFile( "fluid/structure/delta0", 0.45 ) ),
 
          D_ux0_str(     dataFile( "functions/ux0",     "0" ) ),
          D_ur0_str(     dataFile( "functions/ur0",     "0" ) ),
@@ -36,6 +43,7 @@ FSIData::FSIData( GetPot dataFile ) :
          D_ftheta_str(  dataFile( "functions/ftheta",  "0" ) ),
          D_Radius_str(  dataFile( "functions/Radius" , "0" ) ),
          D_dRadius_str( dataFile( "functions/dRadius", "0" ) ),
+
 
          D_ux0( muparser_function( D_ux0_str ) ),
          D_ur0( muparser_function( D_ur0_str ) ),
@@ -66,13 +74,43 @@ FSIData::FSIData( GetPot dataFile ) :
             D_Radius = muparser_function( D_Radius_str );
             D_dRadius = muparser_function( D_dRadius_str );
         break;
-        case 1:
+        case 1: // stenosis : Exponential Occlusion
             D_Radius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return 1 - /*occlusion*/0.45 * exp( - ( x - D_L / 2 ) * ( x - D_L / 2 ) ); };
             D_dRadius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return 2 * ( x - D_L / 2 ) * /*occlusion*/0.45 * exp( - ( x - D_L / 2 ) * ( x - D_L / 2 ) ); };
         break;
-        case 2:
+        case 2:  // Aneurysm
             D_Radius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return 0.5 + /*occlusion*/0.45 * exp( - ( x - D_L / 2 ) * ( x - D_L / 2 ) ); };
             D_dRadius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return - 2 * ( x - D_L / 2 ) * /*occlusion*/0.45 * exp( - ( x - D_L / 2 ) * ( x - D_L / 2 ) ); };
+        break;
+        case 3: // Cone
+            D_Radius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return ( D_Rout - D_Rin ) / D_L * x + D_Rin; };
+            D_dRadius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return ( D_Rout - D_Rin ) / D_L; };
+        break;
+        case 4: // axisymmetric
+            D_Radius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
+            {
+              Real xShift(x-D_L/3);
+              if( xShift>-D_Z0 && xShift<D_Z0 )
+              {
+                  return D_Rin * ( 1 - D_delta0 / (2*D_Rin) * ( 1 + std::cos(M_PI*xShift/D_Z0) ) );
+              }
+              else
+              {
+                  return D_Rin;
+              }
+            };
+            D_dRadius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
+            {
+              Real xShift(x-D_L/3);
+             if( xShift>-D_Z0 && xShift<D_Z0 )
+             {
+                 return D_delta0/2 * M_PI/D_Z0 * std::sin(M_PI*xShift/D_Z0);
+             }
+             else
+             {
+                 return 0.;
+             }
+            };
         break;
     }
 }

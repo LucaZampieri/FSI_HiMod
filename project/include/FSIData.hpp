@@ -78,6 +78,31 @@ class FSIData
       return D_nu;
     }
 
+    const Real& occlusion() const
+    {
+      return D_occlusion;
+    }
+
+    const Real& Rin() const
+    {
+      return D_Rin;
+    }
+
+    const Real& Rout() const
+    {
+      return D_Rout;
+    }
+
+    const Real& Z0() const
+    {
+      return D_Z0;
+    }
+
+    const Real& delta0() const
+    {
+      return D_delta0;
+    }
+
     const function_Type& ux0() const
     {
       return D_ux0;
@@ -208,6 +233,11 @@ class FSIData
     Real D_e;                 // Coefficient structure
 
     Real D_nu;                // dynamical viscosity of the fluid
+    Real D_occlusion;         // Occlusion of the cylinder (used for cases 1&2)
+    Real D_Rin;               // input Radius for cases 3&4
+    Real D_Rout;              // output radius for cases 3&4
+    Real D_Z0;                // Mioddle section for case 4
+    Real D_delta0;                // Mioddle section for case 4
 
     std::string D_ux0_str;      // string of the initial axial velocity
     std::string D_ur0_str;      // string of the initial radial velocity
