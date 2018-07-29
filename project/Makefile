@@ -87,7 +87,7 @@ clean :
 	$(RM) build/*
 
 distclean : clean
-	$(RM) $(EXE) output/*.txt output/*.vtk output/plot/*
+	$(RM) $(EXE) output/*.txt output/*.vtk output/plot/*.jpg
 
 outclean:
-	$(RM) output/*.txt output/*.vtk output/plot/*
+	$(RM) output/*.txt output/*.vtk  output/plot/*.jpg

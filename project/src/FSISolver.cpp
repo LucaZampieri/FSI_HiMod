@@ -41,10 +41,13 @@ namespace LifeV
              etarOld( vector_Type( Map_Eta, Unique ) ),
              exporterVtk( HiModExporterVtk( *(HM->modalspace()), uMeshSize, data->Nelements(), 1 ) )
   {
+    //data -> printAll(); // print all the values found in datafile
     refMap->evaluateAxialMap( data->L()/(pdof - 1) /* h */, udof, data->Radius(), data->dRadius());
 
     block_row.resize( data->mx() + data->mr() + data->mtheta() + data->mp(), pdof );
     block_col.resize( data->mx() + data->mr() + data->mtheta() + data->mp(), pdof );
+
+    std::cout << "count of the number of nodes : " << (data->mx() + data->mr() + data->mtheta()) * udof + data->mp() * pdof << std::endl;
 
     SystemMatrix->setBlockStructure( block_row, block_col );
     SystemMatrix->zero();
@@ -245,6 +248,10 @@ namespace LifeV
     for (UInt iter = 1; iter <= numbStep; ++iter)
     {
       t += dt;
+      std::cout << "\n----------------------------------------\n";
+      std::cout << "Entering iteration: "+to_string(iter) << std::endl;
+      std::cout << "Time in simulation: "+to_string(t)    << std::endl;
+      std::cout << "----------------------------------------\n\n";
       solveSystem( t );
       expandSolution();
       computeDisplacement();

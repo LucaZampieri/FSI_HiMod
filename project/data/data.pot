@@ -4,58 +4,60 @@
 
 [himod]
   drho    = 0
-  mx      = 3 # modes for Vx
-  mr      = 3 # modes for Vr
-  mtheta  = 3 # modes for Vtheta
-  mp      = 3 # modes for the pressure
+  mx      = 5                # modes for Vx
+  mr      = 5                # modes for Vr
+  mtheta  = 5                # modes for Vtheta
+  mp      = 3                # modes for the pressure
 [../]
 
 [mesh]
-    num_elements        = 30 # num of elements in x-discretization
+    num_elements        = 50 # num of elements in x-discretization
     Poly_type_velocity  = P2
     Poly_type_pressure  = P1
 [../]
 
 [fluid]
     [./physics]
-        nu        = 0.0222
+        nu        = 0.035     # cinematic viscosity
     [../]
     [./structure]
-        L         = 3         # length of the cylinder
+        L         = 100         # length of the cylinder
         rho_s     = 1         # Density (specific mass) of the membrane (Wall)
         h_s       = 0.05      # Width of the membrane (Wall)
-        e         = 5.e5      # e = Young * width / ((1 - poisson*poisson) * R*R)
+        e         = 4.e2      # e = Young * width / ((1 - poisson*poisson) * R*R)
     [../]
 [../]
 
 [time]
-    t0  = 0            # initial time
-    dt  = 0.25         # time step
-    T   = 2           # final time
+    t0  = 0.03           # initial time
+    dt  = 0.02           # time step
+    T   = 0.1            # final time
 [../]
 
 [functions]
-    ux0 = 1
-    ur0 = 0
+    ux0 = 3
+    ur0 = 0     #100*sin(t*100*2*3.14)
     utheta0 = 0
 
-    Radius  = 1+0.1*x # Radius function
-    dRadius = 0*x+0.1
+    Radius  = 1 # Radius function
+    dRadius = 0
 
-    p1 = 14000
-    p2 = 13000
+    p1 = 5
+    p2 = 0
 
-    fx = 0
-    fr = 0
-    ftheta = 0
+    fx     = 0                           #1000*sin(t)
+    fr     = 50000*1*x    #2000*t
+    ftheta = 0                           #1000*cos(t)
 [../]
+
+######  Data for the solvers #####
+
 [fixedPoint]
     PF_max  = 1000
     tol     = 1e-4
 [../]
 
-
-[prec]
+[prec]  # used by the solver, see FSISolver.cpp
     prectype                     = Ifpack # Ifpack or ML
     displayList                  = false
 
