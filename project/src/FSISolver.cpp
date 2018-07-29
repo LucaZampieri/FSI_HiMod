@@ -182,7 +182,7 @@ namespace LifeV
         cartesianGrid[i][j].resize(nQuadTheta);
         for (UInt k = 0; k < nQuadTheta; k++)
         {
-          Real x_tmp = data->L()/(pdof - 1) /* h */ *i; // temporary x to update grid
+          Real x_tmp = data->L()/(2*(pdof - 1)) /* h */ *i; // temporary x to update grid
           std::get<0>(grid[i][j][k]) = x_tmp;
           std::get<1>(grid[i][j][k]) = refMap->qrRho().quadPointCoor(j,0) * data->Radius()(0,x_tmp,0,0,0);
           std::get<2>(grid[i][j][k]) = refMap->qrTheta().quadPointCoor(k,0) * data->theta();
