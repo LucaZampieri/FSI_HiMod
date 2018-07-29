@@ -26,10 +26,7 @@ FSIData::FSIData( GetPot dataFile ) :
          D_csi( dataFile( "fluid/structure/csi", 1. ) ),
          D_rho_f( dataFile( "fluid/physics/rho_f", 1. ) ),
          D_nu( dataFile( "fluid/physics/nu", 1. ) ),
-<<<<<<< HEAD
-=======
          //D_e( D_E * D_h_s / ((1 - D_csi*D_csi) * D_R*D_R)),
->>>>>>> f65a88a19c8aa250af643994d791a1f56cab1715
 
          D_ux0_str( dataFile( "functions/ux0", "0" ) ),
          D_ur0_str( dataFile( "functions/ur0", "0" ) ),
