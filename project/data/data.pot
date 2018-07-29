@@ -3,7 +3,6 @@
 [../]
 
 [himod]
-  rho     = 1.0
   drho    = 0
   mx      = 3 # modes for Vx
   mr      = 3 # modes for Vr
