@@ -20,19 +20,23 @@ FSIData::FSIData( GetPot dataFile ) :
          D_alpha( 1./D_dt ),
          D_T( dataFile( "time/T", 1. ) ),
 
+         // Properties and geometry
          D_L(        dataFile( "fluid/structure/L", 5. ) ),
          D_rho_s(    dataFile( "fluid/structure/rho_s", 1. ) ),
          D_h_s(      dataFile( "fluid/structure/h_s", 0.1 ) ),
          D_e(        dataFile( "fluid/structure/e", 4.e5 ) ),
          D_occlusion(dataFile( "fluid/structure/occlusion", 0.45 ) ),
          D_nu(       dataFile( "fluid/physics/nu", 1. ) ),
-
          // Structure
          D_Rin(       dataFile( "fluid/structure/Rin" , 1. ) ),
          D_Rout(      dataFile( "fluid/structure/Rout", 1. ) ),
          D_Z0(        dataFile( "fluid/structure/Z0"  , 1. ) ),
          D_delta0(    dataFile( "fluid/structure/delta0", 0.45 ) ),
 
+         // case
+         D_case_radius( dataFile( "fluid/structure/case_radius", 0 ) ),
+
+         // Functions
          D_ux0_str(     dataFile( "functions/ux0",     "0" ) ),
          D_ur0_str(     dataFile( "functions/ur0",     "0" ) ),
          D_utheta0_str( dataFile( "functions/utheta0", "0" ) ),
@@ -66,91 +70,109 @@ FSIData::FSIData( GetPot dataFile ) :
          D_inverseRhat( [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return D_Radius(t,x,r,theta,0)*r; } )
 {
   std::cout <<"Constructed FSIData" <<std::endl;
-
-    int case_radius = dataFile( "fluid/structure/case_radius", 0 );
-    switch (case_radius)
-    {
-        case 0:
-            D_Radius = muparser_function( D_Radius_str );
-            D_dRadius = muparser_function( D_dRadius_str );
-        break;
-        case 1: // stenosis : Exponential Occlusion
-            D_Radius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return 1 - /*occlusion*/0.45 * exp( - ( x - D_L / 2 ) * ( x - D_L / 2 ) ); };
-            D_dRadius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return 2 * ( x - D_L / 2 ) * /*occlusion*/0.45 * exp( - ( x - D_L / 2 ) * ( x - D_L / 2 ) ); };
-        break;
-        case 2:  // Aneurysm
-            D_Radius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return 0.5 + /*occlusion*/0.45 * exp( - ( x - D_L / 2 ) * ( x - D_L / 2 ) ); };
-            D_dRadius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return - 2 * ( x - D_L / 2 ) * /*occlusion*/0.45 * exp( - ( x - D_L / 2 ) * ( x - D_L / 2 ) ); };
-        break;
-        case 3: // Cone
-            D_Radius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return ( D_Rout - D_Rin ) / D_L * x + D_Rin; };
-            D_dRadius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return ( D_Rout - D_Rin ) / D_L; };
-        break;
-        case 4: // axisymmetric
-            D_Radius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
+  switch (D_case_radius)
+  {
+      case 0:
+          D_Radius = muparser_function( D_Radius_str );
+          D_dRadius = muparser_function( D_dRadius_str );
+      break;
+      case 1: // stenosis : Exponential Occlusion
+          D_Radius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return 1 - /*occlusion*/0.45 * exp( - ( x - D_L / 2 ) * ( x - D_L / 2 ) ); };
+          D_dRadius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return 2 * ( x - D_L / 2 ) * /*occlusion*/0.45 * exp( - ( x - D_L / 2 ) * ( x - D_L / 2 ) ); };
+      break;
+      case 2:  // Aneurysm
+          D_Radius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return 0.5 + /*occlusion*/0.45 * exp( - ( x - D_L / 2 ) * ( x - D_L / 2 ) ); };
+          D_dRadius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return - 2 * ( x - D_L / 2 ) * /*occlusion*/0.45 * exp( - ( x - D_L / 2 ) * ( x - D_L / 2 ) ); };
+      break;
+      case 3: // Cone
+          D_Radius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return ( D_Rout - D_Rin ) / D_L * x + D_Rin; };
+          D_dRadius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return ( D_Rout - D_Rin ) / D_L; };
+      break;
+      case 4: // axisymmetric
+          D_Radius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
+          {
+            Real xShift(x-D_L/3);
+            if( xShift>-D_Z0 && xShift<D_Z0 )
             {
-              Real xShift(x-D_L/3);
-              if( xShift>-D_Z0 && xShift<D_Z0 )
-              {
-                  return D_Rin * ( 1 - D_delta0 / (2*D_Rin) * ( 1 + std::cos(M_PI*xShift/D_Z0) ) );
-              }
-              else
-              {
-                  return D_Rin;
-              }
-            };
-            D_dRadius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
+                return D_Rin * ( 1 - D_delta0 / (2*D_Rin) * ( 1 + std::cos(M_PI*xShift/D_Z0) ) );
+            }
+            else
             {
-              Real xShift(x-D_L/3);
-             if( xShift>-D_Z0 && xShift<D_Z0 )
-             {
-                 return D_delta0/2 * M_PI/D_Z0 * std::sin(M_PI*xShift/D_Z0);
-             }
-             else
-             {
-                 return 0.;
-             }
-            };
-        break;
-    }
+                return D_Rin;
+            }
+          };
+          D_dRadius = [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ )
+          {
+            Real xShift(x-D_L/3);
+           if( xShift>-D_Z0 && xShift<D_Z0 )
+           {
+               return D_delta0/2 * M_PI/D_Z0 * std::sin(M_PI*xShift/D_Z0);
+           }
+           else
+           {
+               return 0.;
+           }
+          };
+      break;
+  }
 }
 
 void FSIData::printAll() const
 {
-  std::cout <<"The data of the fluid structure interaction problem are:" <<std::endl;
-  std::cout << "Number of modes: \n";
-  std::cout << std::setw(5)  << std::left     <<"mx: "     <<D_mx;
-  std::cout << std::setw(10) << std::internal <<"mr: "     <<D_mr;
-  std::cout << std::setw(10) << std::internal <<"mtheta: " <<D_mtheta;
-  std::cout << std::setw(5)  << std::right    <<"mp: "     <<D_mp;
+  std::cout <<"*** The data of the fluid structure interaction problem are: ***" <<std::endl;
+  std::cout << " ----- About Discretization: -----\n";
+  std::cout << std::setw(0)  << std::left     << "mx = " <<D_mx;
+  std::cout << std::setw(10) << std::internal << "mr = "     <<D_mr;
+  std::cout << std::setw(15) << std::right    << "mtheta = " <<D_mtheta;
+  std::cout << std::endl;
+  std::cout <<"mp = "     <<D_mp << std::endl;
+  std::cout <<"Nelements = " <<D_Nelements;
+  std::cout << std::endl;
+  std::cout << std::endl;
 
-  std::cout <<"Nelements: " <<D_Nelements <<std::endl;
+  std::cout << " ----- About Time: -----\n";
+  std::cout << std::setw(0)  << std::left     <<"t0 = " <<D_t0;
+  std::cout << std::setw(10) << std::internal <<"dt = " <<D_dt;
+  std::cout << std::setw(10) << std::right    <<"T = "  <<D_T;
+  std::cout << std::endl;
+  std::cout << std::endl;
 
-  std::cout <<"t0: " <<D_t0 <<std::endl;
-  std::cout <<"dt: " <<D_dt <<std::endl;
-  std::cout <<"T: "  <<D_T  <<std::endl;
+  std::cout << " ----- About Geometry: -----\n";
+  std::cout << "case_radius = " << D_case_radius ;
+  std::cout << std::endl;
+  std::cout << std::setw(5)  << std::left << "L = "      << D_L;
+  std::cout << std::setw(10)  << std::internal << "Radius = "  << D_Radius_str;
+  std::cout << std::setw(10)  << std::right << "dRadius = " << D_dRadius_str ;
+  std::cout << std::endl;
+  std::cout << std::setw(5)  << std::internal << "Rin = "  << D_Rin;
+  std::cout << std::setw(10) << std::internal << "Rout = " << D_Rout ;
+  std::cout << std::endl;
+  std::cout << std::setw(10) << std::internal << "occlusion = "   << D_occlusion ;
+  std::cout << std::setw(10) << std::internal << "Z0 = "   << D_Z0 ;
+  std::cout << std::setw(10) << std::internal << "delta0 = "   << D_delta0 ;
+  std::cout << std::endl;
+  std::cout << std::endl;
 
-  std::cout << "Radius "  << D_Radius_str << std::endl;
-  std::cout << "dRadius " << D_dRadius_str << std::endl;
+  std::cout << " ----- About Parameters: -----\n";
+  std::cout <<"nu = " <<D_nu <<std::endl;
+  std::cout <<"rho_s = " <<D_rho_s <<std::endl;
+  std::cout <<"h_s = " <<D_h_s <<std::endl;
+  std::cout <<"e = " <<D_e <<std::endl;
+  std::cout << std::endl;
 
-
-  std::cout <<"L: " <<D_L <<std::endl;
-  std::cout <<"rho_s: " <<D_rho_s <<std::endl;
-  std::cout <<"h_s: " <<D_h_s <<std::endl;
-  std::cout <<"e: " <<D_e <<std::endl;
-
-  std::cout <<"nu: " <<D_nu <<std::endl;
-
-  std::cout <<"ux0 = " <<D_ux0_str <<std::endl;
-  std::cout <<"ur0 = " <<D_ur0_str <<std::endl;
-  std::cout <<"utheta0 = " <<D_utheta0_str <<std::endl;
-
-  std::cout <<"p1 = " <<D_p1_str <<std::endl;
-  std::cout <<"p2 = " <<D_p2_str <<std::endl;
-
-  std::cout <<"fx = " <<D_fx_str <<std::endl;
-  std::cout <<"fr = " <<D_fr_str <<std::endl;
-  std::cout <<"ftheta = " <<D_ftheta_str <<std::endl;
+  std::cout << " ----- About Functions: -----\n";
+  std::cout <<"p1 = " <<D_p1_str;
+  std::cout << std::setw(10) << std::right << "p2 = " <<D_p2_str;
+  std::cout << std::endl;
+  std::cout <<"ux0 = " <<D_ux0_str;
+  std::cout << std::setw(10) << std::internal <<"ur0 = " <<D_ur0_str;
+  std::cout << std::setw(20) << std::right <<"utheta0 = " <<D_utheta0_str;
+  std::cout << std::endl;
+  std::cout <<"fx = " <<D_fx_str;
+  std::cout << std::setw(10) << std::internal <<"fr = " <<D_fr_str;
+  std::cout << std::setw(20) << std::right <<"ftheta = " <<D_ftheta_str;
+  std::cout << std::endl;
+  std::cout << "*** end of the data print ***\n\n\n";
 }
 
 }

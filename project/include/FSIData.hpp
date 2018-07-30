@@ -221,6 +221,8 @@ class FSIData
 
     UInt D_Nelements;         // number of finite elements along the axial direction
 
+    UInt D_case_radius;        // Case for the geometry
+
     Real D_t0;                // initial time
     Real D_dt;                // time step
     Real D_alpha;              // 1/dt

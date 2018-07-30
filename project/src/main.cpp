@@ -86,7 +86,7 @@ int main( int argc, char* argv[] )
 
 
   // ---------- Define Fespaces/ModalSpaceCircular  ----------
-  std::cout <<"Definition of NSModalSpaceCircular: " <<std::endl;
+  std::cout <<" *** Definition of NSModalSpaceCircular *** " <<std::endl;
   boost::shared_ptr< mesh_Type > fullMeshPtr( new mesh_Type );
   regularMesh1D( *fullMeshPtr, 0, data.Nelements(), false, data.L(), 0.0 );
   // FE spaces
@@ -119,8 +119,9 @@ int main( int argc, char* argv[] )
 
 
   // ---------- Create The solver and solves the problem ----------
+  std::cout <<" *** Definition of FSISolver *** " <<std::endl;
   FSISolver solver( HM, dataFile, &refMap );
-
+  std::cout <<" *** Solves system *** " <<std::endl;
   solver.solve();
 
   std::cout <<"---------- THE END !!! ----------" <<std::endl;

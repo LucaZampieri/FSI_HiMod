@@ -4879,8 +4879,8 @@ const ReferenceFEHybrid feTetraRT0VdotNHyb ( "Hybrid RT0 elements on a tetrahedr
 
 // -------------------------------- New FSI ------------------------------------
 
-const size_t QUAD_RULE_BOUNDARY = 0; // Id of the quadRule
-static const QuadraturePoint pt_boundary[ 6 ] = {
+const size_t QUAD_RULE_BOUNDARY_6PT = 0; // Id of the quadRule
+static const QuadraturePoint pt_boundary_6pt[ 6 ] = {
                             QuadraturePoint ( 0.  , 0. ),
   													QuadraturePoint ( 0.2 , 0. ),
   													QuadraturePoint ( 0.4 , 0. ),
@@ -4892,13 +4892,59 @@ static const QuadraturePoint pt_boundary[ 6 ] = {
 
 // This funtion is like not integrating (weight only on the end point)
 // However it is used in order to get the basis function in the last point that we later use in the modal expansion for the boundary term.
-const QuadratureRule quadRuleBoundary ( pt_boundary,         // quadrature points
-                                        QUAD_RULE_BOUNDARY,  // ID (not important here)
+const QuadratureRule quadRuleBoundary ( pt_boundary_6pt,         // quadrature points
+                                        QUAD_RULE_BOUNDARY_6PT,  // ID (not important here)
                                         "QuadRule using only the extremes point", // Name for the quadrule
                                         LINE, // Shape
                                         6,    // Number of quadrature points
                                         0 );  // degree of exactness
 
+// ---------------------------   32 points   -------------------------------
+/*
+const size_t QUAD_RULE_BOUNDARY_32PT = 1; // Id of the quadRule
+static const QuadraturePoint pt_boundary_32pt[ 32 ] = {
+                            QuadraturePoint ( 0.03125*0. , 0. ),
+  													QuadraturePoint ( 0.03125*1  , 0. ),
+  													QuadraturePoint ( 0.03125*2  , 0. ),
+  													QuadraturePoint ( 0.03125*3  , 0. ),
+  													QuadraturePoint ( 0.03125*4  , 0. ),
+                            QuadraturePoint ( 0.03125*5  , 0. ),
+  													QuadraturePoint ( 0.03125*6  , 0. ),
+                            QuadraturePoint ( 0.03125*7  , 0. ),
+  													QuadraturePoint ( 0.03125*8  , 0. ),
+                            QuadraturePoint ( 0.03125*9  , 0. ),
+  													QuadraturePoint ( 0.03125*10 , 0. ),
+                            QuadraturePoint ( 0.03125*11 , 0. ),
+  													QuadraturePoint ( 0.03125*12 , 0. ),
+  													QuadraturePoint ( 0.03125*13 , 0. ),
+  													QuadraturePoint ( 0.03125*14 , 0. ),
+                            QuadraturePoint ( 0.03125*15 , 0. ),
+  													QuadraturePoint ( 0.03125*16 , 0. ),
+                            QuadraturePoint ( 0.03125*17 , 0. ),
+  													QuadraturePoint ( 0.03125*18 , 0. ),
+                            QuadraturePoint ( 0.03125*19 , 0. ),
+  													QuadraturePoint ( 0.03125*20 , 0. ),
+                            QuadraturePoint ( 0.03125*21 , 0. ),
+  													QuadraturePoint ( 0.03125*22 , 0. ),
+  													QuadraturePoint ( 0.03125*23 , 0. ),
+  													QuadraturePoint ( 0.03125*24 , 0. ),
+                            QuadraturePoint ( 0.03125*25 , 0. ),
+  													QuadraturePoint ( 0.03125*26 , 0. ),
+                            QuadraturePoint ( 0.03125*27 , 0. ),
+  													QuadraturePoint ( 0.03125*28 , 0. ),
+                            QuadraturePoint ( 0.03125*29 , 0. ),
+  													QuadraturePoint ( 0.03125*30 , 0. ),
+                            QuadraturePoint ( 0.03125*31 , 0. ),
+  													QuadraturePoint ( 1.  , 1. ) }; // 0.03125*32 = 1
+// This funtion is like not integrating (weight only on the end point)
+// However it is used in order to get the basis function in the last point that we later use in the modal expansion for the boundary term.
+const QuadratureRule quadRuleBoundary32pt ( pt_boundary_32pt,         // quadrature points
+                                        QUAD_RULE_BOUNDARY_32PT,  // ID (not important here)
+                                        "QuadRule using only the extremes point", // Name for the quadrule
+                                        LINE, // Shape
+                                        32,    // Number of quadrature points
+                                        0 );  // degree of exactness
+*/
 // -----------------------------------------------------------------------------
 
 
