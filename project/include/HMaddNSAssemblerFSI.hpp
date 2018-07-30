@@ -875,6 +875,7 @@ vector_type NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::
 evaluateBaseWallGridFSI( const vector_type& fun )
 {
     UInt nquadTheta = M_modalbasis->qrTheta()->nbQuadPt();
+		UInt nquadRhoWall = M_modalbasis->qrRhoWall()->nbQuadPt();
 
     DOF DataVelFESpace( M_velocityFespace->dof() );
     DOF DataPressFESpace( M_pressureFespace->dof() );
@@ -905,10 +906,14 @@ evaluateBaseWallGridFSI( const vector_type& fun )
         {
             for ( UInt ntheta( 0 ); ntheta != nquadTheta; ++ntheta ) // on quadrature node nquadTheta
             {
-                  fcoeff[ntheta + s * nquadTheta] +=
-                  fun[ndofuFE * M_modalbasis->mx() + j * ndofuFE + index] *
-                                  M_modalbasis->rphirhoWall( j ) * normrho *
-                                  M_modalbasis->rphitheta( j, ntheta ) * normtheta;
+							for ( UInt nrho( 0 ); nrho != nquadRhoWall; ++nrho ) // on quadrature node nqadRho
+							{
+								fcoeff[ntheta + s * nquadTheta] +=
+								fun[ndofuFE * M_modalbasis->mx() + j * ndofuFE + index] *
+																M_modalbasis->rphirhoWall( j, nrho ) * normrho *
+																M_modalbasis->rphitheta( j, ntheta ) * normtheta;
+							}
+
             }
         }
     }

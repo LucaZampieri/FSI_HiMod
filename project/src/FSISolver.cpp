@@ -116,6 +116,45 @@ namespace LifeV
         }
       }
     }
+
+    std::cout << "\n\n\nPrinting ux ,ur, utheta: \n\n";
+
+    std::cout << ux[0][16][16]   << "     "
+              << ux[1][16][16]   << "     "
+              << ux[3][16][16]   << "     "
+              << ux[13][16][16]  << "     "
+              << ux[25][16][16]  << "     "
+              << ux[30][16][16]  << "     "
+              <<  std::endl;
+
+
+    std::cout << "\n\n Printing ur: \n\n";
+    for (int i=0; i != nQuadRho; ++i)
+    {
+      std::cout << ur[0][i][16]   << "     "
+                << ur[1][i][16]   << "     "
+                << ur[3][i][16]   << "     "
+                << ur[13][i][16]  << "     "
+                << ur[25][i][16]  << "     "
+                << ur[30][i][16]  << "     "
+                << std::endl;
+    }
+    std::cout << "\n\n Printing urWall: \n\n";
+
+    std::cout << urWall[coord2indexWall(0,16)]  << "     "
+              << urWall[coord2indexWall(1,16)]  << "     "
+              << urWall[coord2indexWall(3,16)]  << "     "
+              << urWall[coord2indexWall(13,16)] << "     "
+              << urWall[coord2indexWall(25,16)] << "     "
+              << urWall[coord2indexWall(30,16)] << "     "
+              << std::endl;
+    /*
+    std::cout << "\n\n Printing utheta: \n\n\n";
+    for (int i=0; i != nQuadTheta; ++i)
+    {
+      std::cout << utheta[16][16][i] << std::endl;
+    }*/
+
   }
 
   /*

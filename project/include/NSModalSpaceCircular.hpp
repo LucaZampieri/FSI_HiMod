@@ -586,15 +586,15 @@ public:
     }
 
     //! return the value of the sub-base at the mode j
-    virtual Real rphirhoWall (const UInt& j) const
+    virtual Real rphirhoWall (const UInt& j, const UInt& n) const
     {
-        return M_rphirhoWall[j][5];
+        return M_rphirhoWall[j][n];
     }
 
     //! return the value of the sub-base derivate at the mode j
-    virtual Real rdphirhoWall (const UInt& j) const
+    virtual Real rdphirhoWall (const UInt& j, const UInt& n) const
     {
-        return M_rdphirhoWall[j][5];
+        return M_rdphirhoWall[j][n];
     }
 
     void evaluateBasisFSI();

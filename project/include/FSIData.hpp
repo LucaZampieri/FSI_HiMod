@@ -214,6 +214,8 @@ class FSIData
 
   private:
 
+    bool D_dataFileHasBeenRead; // Boolean to check if the datafile has been read
+
     UInt D_mx;                // number of modal functions for the axial velocity
     UInt D_mr;                // number of modal functions for the radial velocity
     UInt D_mtheta;            // number of modal functions for the angular velocity

@@ -4042,8 +4042,8 @@ void NSModalSpaceCircular::compute_r000rr( const UInt& k, const UInt& j, const R
 
 				}
 				coeff5 += (rho_s*h_s*alpha + e/alpha) *
-					M_rphirhoWall[k][5] * normrho * M_rphitheta[k][h] * normtheta *
-					M_rphirhoWall[j][5] * normrho * M_rphitheta[j][h] * normtheta *
+					M_rphirhoWall[k][M_quadruleRhoWall->nbQuadPt()-1] * normrho * M_rphitheta[k][h] * normtheta *
+					M_rphirhoWall[j][M_quadruleRhoWall->nbQuadPt()-1] * normrho * M_rphitheta[j][h] * normtheta *
 					M_Theta * M_quadruleTheta->weight( h );
 		}
 

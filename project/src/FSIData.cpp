@@ -7,6 +7,7 @@ namespace LifeV
 {
 
 FSIData::FSIData( GetPot dataFile ) :
+         D_dataFileHasBeenRead( dataFile( "set/dataFileHasBeenRead", 0 ) ),
          // HiMod
          D_mx( dataFile( "himod/mx", 10 ) ),
          D_mr( dataFile( "himod/mr", 10 ) ),
@@ -70,6 +71,11 @@ FSIData::FSIData( GetPot dataFile ) :
          D_inverseRhat( [this] ( const Real& t, const Real& x, const Real& r, const Real& theta, const ID& /*i*/ ) { return D_Radius(t,x,r,theta,0)*r; } )
 {
   std::cout <<"Constructed FSIData" <<std::endl;
+  if (D_dataFileHasBeenRead == 0)
+  {
+    std::cout << "Personal WARNING: the datafile has not been read! Using default values\n";
+    std::cout << "HINT: verify the line ending rule of the datafile\n";
+  }
   switch (D_case_radius)
   {
       case 0:
@@ -141,8 +147,8 @@ void FSIData::printAll() const
   std::cout << "case_radius = " << D_case_radius ;
   std::cout << std::endl;
   std::cout << std::setw(5)  << std::left << "L = "      << D_L;
-  std::cout << std::setw(10)  << std::internal << "Radius = "  << D_Radius_str;
-  std::cout << std::setw(10)  << std::right << "dRadius = " << D_dRadius_str ;
+  std::cout << std::setw(15)  << std::internal << "Radius = "  << D_Radius_str;
+  std::cout << std::setw(15)  << std::right << "dRadius = " << D_dRadius_str ;
   std::cout << std::endl;
   std::cout << std::setw(5)  << std::internal << "Rin = "  << D_Rin;
   std::cout << std::setw(10) << std::internal << "Rout = " << D_Rout ;

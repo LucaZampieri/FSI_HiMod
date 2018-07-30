@@ -398,7 +398,7 @@ extern const QuadratureRule quadRuleHexa8pt;
 // -------------------------------- New FSI ------------------------------------
 
 extern const QuadratureRule quadRuleBoundary;
-extern const QuadratureRule quadRuleBoundary32pt;
+//extern const QuadratureRule quadRuleBoundary32pt;
 
 // -----------------------------------------------------------------------------
 

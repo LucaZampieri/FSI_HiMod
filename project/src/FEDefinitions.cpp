@@ -4900,10 +4900,10 @@ const QuadratureRule quadRuleBoundary ( pt_boundary_6pt,         // quadrature p
                                         0 );  // degree of exactness
 
 // ---------------------------   32 points   -------------------------------
-/*
+
 const size_t QUAD_RULE_BOUNDARY_32PT = 1; // Id of the quadRule
 static const QuadraturePoint pt_boundary_32pt[ 32 ] = {
-                            QuadraturePoint ( 0.03125*0. , 0. ),
+                            //QuadraturePoint ( 0.03125*0. , 0. ),
   													QuadraturePoint ( 0.03125*1  , 0. ),
   													QuadraturePoint ( 0.03125*2  , 0. ),
   													QuadraturePoint ( 0.03125*3  , 0. ),
@@ -4944,7 +4944,7 @@ const QuadratureRule quadRuleBoundary32pt ( pt_boundary_32pt,         // quadrat
                                         LINE, // Shape
                                         32,    // Number of quadrature points
                                         0 );  // degree of exactness
-*/
+
 // -----------------------------------------------------------------------------
 
 
