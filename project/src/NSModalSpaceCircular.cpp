@@ -4041,9 +4041,15 @@ void NSModalSpaceCircular::compute_r000rr( const UInt& k, const UInt& j, const R
 							M_Theta * M_quadruleRho->weight( n ) * M_quadruleTheta->weight( h );
 
 				}
+				/*
 				coeff5 += (rho_s*h_s*alpha + e/alpha) *
 					M_rphirhoWall[k][M_quadruleRhoWall->nbQuadPt()-1] * normrho * M_rphitheta[k][h] * normtheta *
 					M_rphirhoWall[j][M_quadruleRhoWall->nbQuadPt()-1] * normrho * M_rphitheta[j][h] * normtheta *
+					M_Theta * M_quadruleTheta->weight( h );
+				*/
+				coeff5 += (rho_s*h_s*alpha + e/alpha) *
+					M_rphirho[k][M_quadruleRho->nbQuadPt()-1] * normrho * M_rphitheta[k][h] * normtheta *
+					M_rphirho[j][M_quadruleRho->nbQuadPt()-1] * normrho * M_rphitheta[j][h] * normtheta *
 					M_Theta * M_quadruleTheta->weight( h );
 		}
 
@@ -4131,7 +4137,7 @@ void NSModalSpaceCircular::compute_r00r( const UInt& j, const vector_Type& f, co
 
 		// If you have a function which is normalized in (0,1) with respect to L2 norm.
 		// You have to consider other constant to obtain normalization in (0,L)
-		Real normrho = 1.0 / M_Rho;
+		Real normrho   = 1.0 / M_Rho;
 		Real normtheta = 1.0 / sqrt( 2. * M_PI );
 
 		for (UInt m = 0; m < R00r.size(); ++m)
@@ -4158,13 +4164,22 @@ void NSModalSpaceCircular::compute_r00r( const UInt& j, const vector_Type& f, co
 									M_quadruleRho->quadPointCoor( n, 0 ) *
 									M_Theta * M_quadruleRho->weight( n ) * M_quadruleTheta->weight( h );
 						}
+						/* using urwall
 						coeff3 += rho_s*h_s*alpha * urWall_old[coord2indexWall(m,h)] *
-							M_rphirhoWall[j][5] * normrho * M_rphitheta[j][h] * normtheta *
+							M_rphirhoWall[j][M_quadruleRhoWall->nbQuadPt()-1] * normrho * M_rphitheta[j][h] * normtheta *
 							M_Theta * M_quadruleTheta->weight( h );
 
 						coeff4 += e * etar_old[m] *
-							M_rphirhoWall[j][5] * normrho * M_rphitheta[j][h] * normtheta *
+							M_rphirhoWall[j][M_quadruleRhoWall->nbQuadPt()-1] * normrho * M_rphitheta[j][h] * normtheta *
 							M_Theta * M_quadruleTheta->weight( h );
+							*/
+							coeff3 += rho_s*h_s*alpha * u_old[rcoord2index(m,M_quadruleRho->nbQuadPt()-1,h)] *
+								M_rphirho[j][M_quadruleRho->nbQuadPt()-1] * normrho * M_rphitheta[j][h] * normtheta *
+								M_Theta * M_quadruleTheta->weight( h );
+
+							coeff4 += e * etar_old[m] *
+								M_rphirho[j][M_quadruleRho->nbQuadPt()-1] * normrho * M_rphitheta[j][h] * normtheta *
+								M_Theta * M_quadruleTheta->weight( h );
 				}
 				R00r[m] = ((coeff1 + coeff2)*M_map->xJacobian()[m] + (coeff3 - coeff4)*M_map->xJacobianWall()[m]);
 		}

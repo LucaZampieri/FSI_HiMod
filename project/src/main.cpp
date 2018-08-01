@@ -90,8 +90,8 @@ int main( int argc, char* argv[] )
   boost::shared_ptr< mesh_Type > fullMeshPtr( new mesh_Type );
   regularMesh1D( *fullMeshPtr, 0, data.Nelements(), false, data.L(), 0.0 );
   // FE spaces
-  boost::shared_ptr<FESpace<mesh_Type, MapEpetra>> uSpace( new FESpace<mesh_Type, MapEpetra>( fullMeshPtr, "P2", 1, Comm ) );
-  boost::shared_ptr<FESpace<mesh_Type, MapEpetra>> pSpace( new FESpace<mesh_Type, MapEpetra>( fullMeshPtr, "P1", 1, Comm ) );
+  boost::shared_ptr<FESpace<mesh_Type, MapEpetra>> uSpace( new FESpace<mesh_Type, MapEpetra>( fullMeshPtr, data.polyTypeVelocity(), 1, Comm ) );
+  boost::shared_ptr<FESpace<mesh_Type, MapEpetra>> pSpace( new FESpace<mesh_Type, MapEpetra>( fullMeshPtr, data.polyTypePressure(), 1, Comm ) );
 
   std::vector<Real> uNodes( data.Nelements()*2+1 ); // 2n+1 nodes if it is P2
   for ( UInt i = 0; i < (data.Nelements()+1); ++i ) // n+1 nodes for P1

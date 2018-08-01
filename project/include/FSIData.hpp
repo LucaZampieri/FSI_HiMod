@@ -205,6 +205,16 @@ class FSIData
       return D_inverseRhat;
     }
 
+    std::string polyTypeVelocity() const
+    {
+      return D_polyTypeVelocity;
+    }
+
+    std::string polyTypePressure() const
+    {
+      return D_polyTypePressure;
+    }
+
 
     // Constructor
     FSIData( GetPot dataFile );
@@ -256,6 +266,9 @@ class FSIData
 
     std::string D_Radius_str;   // string of the radius
     std::string D_dRadius_str;  // string of the derivative of the radius
+
+    std::string D_polyTypeVelocity;
+    std::string D_polyTypePressure;
 
     function_Type D_ux0;      // initial axial velocity
     function_Type D_ur0;      // initial radial velocity

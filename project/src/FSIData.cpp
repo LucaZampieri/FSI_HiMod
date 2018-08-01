@@ -13,7 +13,10 @@ FSIData::FSIData( GetPot dataFile ) :
          D_mr( dataFile( "himod/mr", 10 ) ),
          D_mtheta( dataFile( "himod/mtheta", 10 ) ),
          D_mp( dataFile( "himod/mp", 8 ) ),
+
          D_Nelements( dataFile( "mesh/num_elements", 10 ) ),
+         D_polyTypeVelocity( dataFile( "mesh/polyTypeVelocity", "P2" ) ),
+         D_polyTypePressure( dataFile( "mesh/polyTypePressure", "P1" ) ),
 
          // time
          D_t0( dataFile( "time/t0", 0. ) ),
@@ -48,6 +51,8 @@ FSIData::FSIData( GetPot dataFile ) :
          D_ftheta_str(  dataFile( "functions/ftheta",  "0" ) ),
          D_Radius_str(  dataFile( "functions/Radius" , "0" ) ),
          D_dRadius_str( dataFile( "functions/dRadius", "0" ) ),
+
+
 
 
          D_ux0( muparser_function( D_ux0_str ) ),
@@ -132,8 +137,9 @@ void FSIData::printAll() const
   std::cout << std::setw(15) << std::right    << "mtheta = " <<D_mtheta;
   std::cout << std::endl;
   std::cout <<"mp = "     <<D_mp << std::endl;
-  std::cout <<"Nelements = " <<D_Nelements;
-  std::cout << std::endl;
+  std::cout <<"Nelements = " <<D_Nelements<< std::endl;
+  std::cout <<"D_polyTypeVelocity = " <<D_polyTypeVelocity<< std::endl;
+  std::cout <<"D_polyTypePressure = " <<D_polyTypePressure<< std::endl;
   std::cout << std::endl;
 
   std::cout << " ----- About Time: -----\n";
