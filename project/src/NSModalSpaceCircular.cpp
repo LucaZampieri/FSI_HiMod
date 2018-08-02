@@ -3941,12 +3941,50 @@ compute_Phitheta( const UInt& k,
 }
 
 // ------------------------------ New FSI --------------------------------------
+void NSModalSpaceCircular::
+addSliceBCFSI( const std::string& BCx, const Real& mux, const Real& Chix,
+		    const std::string& BCtheta, const Real& mutheta, const Real& Chitheta )
+{
+   M_xGenbasisRhoTheta = EducatedBasisFactory::instance().createObject( BCx );
+   M_xGenbasisRhoTheta -> setRho( M_Rho );
+   M_xGenbasisRhoTheta -> setTheta( M_Theta );
+   M_xGenbasisRhoTheta -> setMu( mux );
+   M_xGenbasisRhoTheta -> setChi( Chix );
+   M_xGenbasisRhoTheta -> setNumberModes( M_mx );
+
+	 // We choose Neumann BC for the pressure because we don't want to enforce any value on the boundary
+   // ( which we do if we enforce Dirichlet BCs ).
+   M_rGenbasisRhoTheta = EducatedBasisFactory::instance().createObject( "neu" );
+   M_rGenbasisRhoTheta -> setRho( M_Rho );
+   M_rGenbasisRhoTheta -> setTheta( M_Theta );
+   M_rGenbasisRhoTheta -> setMu( 1. );
+   M_rGenbasisRhoTheta -> setChi( 0. );
+   M_rGenbasisRhoTheta -> setNumberModes( M_mr );
+
+   M_thetaGenbasisRhoTheta = EducatedBasisFactory::instance().createObject( BCtheta );
+   M_thetaGenbasisRhoTheta -> setRho( M_Rho );
+   M_thetaGenbasisRhoTheta -> setTheta( M_Theta );
+   M_thetaGenbasisRhoTheta -> setMu( mutheta );
+   M_thetaGenbasisRhoTheta -> setChi( Chitheta );
+   M_thetaGenbasisRhoTheta -> setNumberModes( M_mtheta );
+
+   // We choose Neumann BC for the pressure because we don't want to enforce any value on the boundary
+   // ( which we do if we enforce Dirichlet BCs ).
+   M_pGenbasisRhoTheta = EducatedBasisFactory::instance().createObject( "neu" );
+   M_pGenbasisRhoTheta -> setRho( M_Rho );
+   M_pGenbasisRhoTheta -> setTheta( M_Theta );
+   M_pGenbasisRhoTheta -> setMu( 1. );
+   M_pGenbasisRhoTheta -> setChi( 0. );
+   M_pGenbasisRhoTheta -> setNumberModes( M_mp );
+
+   eigensProvider();
+}
 
 void NSModalSpaceCircular::
 evaluateBasisFSI()
 {
     M_xGenbasisRhoTheta -> evaluateBasis( M_xphirho, M_xdphirho, M_xphitheta, M_xdphitheta, M_xEigenvalues, M_quadruleRho, M_quadruleTheta );
-		M_rGenbasisRhoTheta -> evaluateBasis( M_rphirhoWall, M_rdphirhoWall, M_rphitheta, M_rdphitheta, M_rEigenvalues, M_quadruleRhoWall, M_quadruleTheta );
+		//M_rGenbasisRhoTheta -> evaluateBasis( M_rphirhoWall, M_rdphirhoWall, M_rphitheta, M_rdphitheta, M_rEigenvalues, M_quadruleRhoWall, M_quadruleTheta );
     M_rGenbasisRhoTheta -> evaluateBasis( M_rphirho, M_rdphirho, M_rphitheta, M_rdphitheta, M_rEigenvalues, M_quadruleRho, M_quadruleTheta );
     M_thetaGenbasisRhoTheta -> evaluateBasis( M_thetaphirho, M_thetadphirho, M_thetaphitheta, M_thetadphitheta, M_thetaEigenvalues, M_quadruleRho, M_quadruleTheta );
     M_pGenbasisRhoTheta -> evaluateBasis( M_pphirho, M_pdphirho, M_pphitheta, M_pdphitheta, M_pEigenvalues, M_quadruleRho, M_quadruleTheta );
@@ -4234,6 +4272,7 @@ void NSModalSpaceCircular::compute_b0( const UInt& j, const Real& p1, Real& B0 )
 
 		Real coeff1( 0.0 );
 
+
 		// If you have a function which is normalized in (0,1) with respect to L2 norm.
 		// You have to consider other constant to obtain normalization in (0,L)
 		Real normrho = 1.0 / M_Rho;
@@ -4273,9 +4312,9 @@ void NSModalSpaceCircular::compute_bL( const UInt& j, const Real& p2, Real& BL )
 				for ( UInt n = 0; n != M_quadruleRho->nbQuadPt(); ++n )
 				{
 						coeff1 += p2 *
-							M_xphirho[j][n] * normrho * M_xphitheta[j][h] * normtheta *
-							M_quadruleRho->quadPointCoor( n, 0 ) *
-							M_quadruleRho->quadPointCoor( n, 0 ) *
+							M_xphirho[j][n] * normrho * M_xphitheta[j][h] * normtheta * // phi_hat x,j
+							M_quadruleRho->quadPointCoor( n, 0 ) * // r_hat
+							M_quadruleRho->quadPointCoor( n, 0 ) * // r_hat
 							M_Theta * M_quadruleRho->weight( n ) * M_quadruleTheta->weight( h );
 				}
 		}

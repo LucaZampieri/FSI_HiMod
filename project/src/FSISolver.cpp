@@ -3,6 +3,12 @@
 #include <cmath>
 #include <fstream>
 
+#define DEBUG 1
+
+#ifndef FSI_ENABLED
+  #define FSI_ENABLED
+#endif
+
 namespace LifeV
 {
 
@@ -72,38 +78,55 @@ namespace LifeV
 
     solution_3DOld = HM->evaluateForce3DGridFSI( data->ux0(), data->ur0(), data->utheta0(), 0, grid );
     urWallOld = HM->evaluateInitialVelocityWallFSI( data->ur0(), grid, data->Radius() );
+    #ifdef FSI_ENABLED
+      std::cout << "\nFSI ENABLED in fsisolver.cpp. \n";
+    #endif
+
   }
 
   void FSISolver::solveSystem(const Real& t)
   {
+    Rhs->setBlockStructure( block_row );
+    *Rhs *= 0.0;
+    *Solution *= 0.0;
+    SystemMatrix->setBlockStructure( block_row, block_col );
+    SystemMatrix->zero();
+
+
     vector_Type f = HM->evaluateForce3DGridFSI( data->fx(), data->fr(), data->ftheta(), t, grid );
 
     HM->addStokesProblemFSI( SystemMatrix, data->nu(), data->rho_s(), data->h_s(), data->e(), *refMap, t, data->alpha());
-    HM->addRhsFSI( Rhs, data->alpha(), data->rho_s(), data->h_s(), data->e(), f, solution_3DOld, urWallOld, etar);
-    HM->addBcFSI( SystemMatrix, Rhs, data->p1()(t), data->p2()(t) );
+
+    #ifdef FSI_ENABLED
+      HM->addRhsFSI( Rhs, data->alpha(), data->rho_s(), data->h_s(), data->e(), f, solution_3DOld, urWallOld, etar);
+    #endif
+    HM->addBcFSI( SystemMatrix, Rhs, data->p1()(t), data->p2()(t), data->uIn(), data->utheta0() /* 0 */ ,t );
 
     SystemMatrix->globalAssemble();
     Rhs->globalAssemble();
+
+
 
     linearSolver.setOperator( SystemMatrix );
     linearSolver.setRightHandSide( Rhs );
     linearSolver.solve( Solution );
 
-    solution_3D = HM->evaluateBase3DGridFSI( *Solution );
-    urWall = HM->evaluateBaseWallGridFSI( *Solution );
+    solution_3D = HM->evaluateBase3DGrid( *Solution );
+    //urWall = HM->evaluateBaseWallGridFSI( *Solution );
     solution_3DOld = solution_3D;
   }
 
   void FSISolver::solve()
   {
     Real dt = data->dt();
-    Real t = data->t0() - dt;
+    Real t = data->t0() ; // -data->dt()
+    Real finalTime = data->T();
     for (UInt iter = 1; iter <= numbStep; ++iter)
     {
       t += dt;
       std::cout << "\n----------------------------------------\n";
-      std::cout << "Entering iteration: "+to_string(iter) << std::endl;
-      std::cout << "Time in simulation: "+to_string(t)    << std::endl;
+      std::cout << "Entering iteration: "+to_string(iter)+" / "+to_string(numbStep) << std::endl;
+      std::cout << "Time in simulation: "+to_string(t) + " / "+ to_string(finalTime)   << std::endl;
       std::cout << "----------------------------------------\n\n";
       solveSystem( t );
       expandSolution();
@@ -112,7 +135,7 @@ namespace LifeV
       //updateMap( t );
       //computeALEVelocity();
       exporterVtk.writeSolution( std::string( "output/Solution" ), solution_3D, iter, 1 );
-      save( t, iter );
+      save( iter );
 
     }
   }
@@ -135,46 +158,37 @@ namespace LifeV
       }
     }
 
-    std::cout << "\n\n\nCheck: \n\n";
+    #ifdef DEBUG
+      std::cout << "\n\n\nCheck: \n\n";
 
-    std::cout << "\n\n\nPrinting ux ,ur, utheta: \n\n";
-
-    std::cout << ux[0][16][16]   << "     "
-              << ux[1][16][16]   << "     "
-              << ux[3][16][16]   << "     "
-              << ux[13][16][16]  << "     "
-              << ux[25][16][16]  << "     "
-              << ux[30][16][16]  << "     "
-              <<  std::endl;
-
-
-    std::cout << "\n\n Printing ux: \n\n";
-
-    for (int j=0 ; j!= udof; ++j )
-    {
-      std::cout << ux[j][nQuadRho-1][16]   << "     ";
-      std::cout << std::endl;
-      /*
-      std::cout << ur[0][i][16]   << "     "
-                << ur[1][i][16]   << "     "
-                << ur[3][i][16]   << "     "
-                << ur[13][i][16]  << "     "
-                << ur[25][i][16]  << "     "
-                << ur[30][i][16]  << "     " */
-
-    }
+      std::cout << "\n\n\nPrinting ux ,ur, utheta: \n\n";
+      std::cout << "Printing ux (horizontal): \n\n";
+      std::cout << ux[0][0][16]   << "     "
+                << ux[1][0][16]   << "     "
+                << ux[3][0][16]   << "     "
+                << ux[13][0][16]  << "     "
+                << ux[25][0][16]  << "     "
+                << ux[30][0][16]  << "     "
+                <<  std::endl;
 
 
+      std::cout << "\n\n Printing ux: \n\n";
 
-    std::cout << "\n\n Printing urWall: \n\n";
+      for (int j=0 ; j!= udof; ++j )
+      {
+        std::cout << ux[j][nQuadRho-1][16]   << "     ";
+        std::cout << ur[j][nQuadRho-1][16];
+        std::cout << std::endl;
+        /*
+        std::cout << ur[0][i][16]   << "     "
+                  << ur[1][i][16]   << "     "
+                  << ur[3][i][16]   << "     "
+                  << ur[13][i][16]  << "     "
+                  << ur[25][i][16]  << "     "
+                  << ur[30][i][16]  << "     " */
+      }
 
-    std::cout << urWall[coord2indexWall(5,16)]  << "     "
-              << urWall[coord2indexWall(6,16)]  << "     "
-              << urWall[coord2indexWall(7,16)]  << "     "
-              << urWall[coord2indexWall(8,16)] << "     "
-              << urWall[coord2indexWall(9,16)] << "     "
-              << urWall[coord2indexWall(10,16)] << "     "
-              << std::endl;
+    #endif
     /*
     std::cout << "\n\n Printing utheta: \n\n\n";
     for (int i=0; i != nQuadTheta; ++i)
@@ -212,23 +226,23 @@ namespace LifeV
       }
       etar[i] =  etar[i] + data->dt() * sum / nQuadTheta;
       */
-      etar[i] =  etar[i] + data->dt() * ur[i][nQuadRho-1][16]; // 16 -->
-      std::cout << etar[i] << std::endl;
+      etar[i] +=  data->dt() * ur[i][nQuadRho-1][16]; // 16 -->
+      std::cout << "etar: " <<etar[i] << std::endl;
     }
   }
 
   /*
   void FSISolver::updateMap( const Real& t )
   {
-    std::vector<Real> r( udof, data->R() );
+    std::vector<Real> r( udof, data->Radius() );
     for (UInt i = 0; i < udof; i++)
     {
       r[i] += etar[i];
     }
     refMap->setRadius( r );
     refMap->evaluateAxialMap( t );
-  }
-  */
+  }*/
+
   /*
   void FSISolver::updateGrid()
   {
@@ -314,7 +328,8 @@ namespace LifeV
     }
   }
 
-  void FSISolver::save( const Real& t, const UInt& iter ) const
+  //void FSISolver::save( const Real& t, const UInt& iter ) const
+  void FSISolver::save( const UInt& iter ) const
   {
 
       std::ofstream solution( "output/Iteration" + std::to_string(iter) + ".txt" );

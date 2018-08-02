@@ -1,6 +1,12 @@
 #ifndef __HMAADDNSASSEMBLERFSI_HPP__
 #define __HMAADDNSASSEMBLERFSI_HPP__
 
+
+#ifndef FSI_ENABLED
+  #define FSI_ENABLED
+#endif
+
+
 template< typename mesh_type, typename matrix_type, typename vector_type>
 void NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::
 addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& nu, const Real& rho_s, const Real& h_s, const Real& e, ReferenceMap& refMap, const Real& t, const Real& alpha )
@@ -87,7 +93,11 @@ addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& nu, const R
             vector_ptrType R101rr( new vector_type( M_velocityFespace->map(), Repeated ) );
             vector_ptrType R110rr( new vector_type( M_velocityFespace->map(), Repeated ) );
 
-            M_modalbasis->compute_r000rr( k, j, nu, alpha, rho_s, h_s, e, *R000rr );
+						#ifdef FSI_ENABLED
+            	M_modalbasis->compute_r000rr( k, j, nu, alpha, rho_s, h_s, e, *R000rr );
+						#else
+							M_modalbasis->compute_r000rr( k, j, nu, alpha, *R000rr );
+						#endif
             M_modalbasis->compute_r001rr( k, j, nu, *R001rr );
             M_modalbasis->compute_r010rr( k, j, nu, *R010rr );
             M_modalbasis->compute_r100rr( k, j, nu, *R100rr );
@@ -672,11 +682,12 @@ addRhsFSI( const vector_ptrType& rhs, const Real& alpha, const Real& rho_s, cons
 
 template< typename mesh_type, typename matrix_type, typename vector_type>
 void NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::
-addBcFSI( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs, const Real& p1, const Real& p2 )
+addBcFSI( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs, const Real& p1, const Real& p2, const function_Type& g_in, const function_Type& g_out, const Real& t )
 {
 
     UInt udof = M_etufespace->dof().numTotalDof();
     UInt pdof = M_etpfespace->dof().numTotalDof();
+		std::cout << "\n\n\n Pressure p1: " << p1 << "\n\n\n" << std::endl; // Luca
 
     for( UInt k = 0; k != M_modalbasis->mx(); ++k )
     {
@@ -685,10 +696,12 @@ addBcFSI( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs, const R
         Real BL;
         M_modalbasis->compute_bL( k, p2, BL );
 
+
         rhs->setCoefficient( k *udof,
-                             ( *rhs )( k *udof ) + B0 );
+                             ( *rhs )( k *udof ) +  B0 );
         rhs->setCoefficient( ( k + 1 ) *udof - 1,
                              ( *rhs )( ( k + 1 ) *udof - 1 ) + BL );
+
     }
 
     for ( UInt j = 0; j != M_modalbasis->mr(); ++j )
@@ -708,6 +721,74 @@ addBcFSI( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs, const R
 				systemMatrix->setCoefficient( M_modalbasis->mx() * udof + M_modalbasis->mr() * udof + j * udof + pdof - 1, M_modalbasis->mx() * udof + M_modalbasis->mr() * udof + j * udof + pdof - 1, 1e+30 );
 				rhs->setCoefficient( M_modalbasis->mx() * udof + M_modalbasis->mr() * udof + j * udof + pdof - 1, 0 );
     }
+
+		// test for velocity BC LUCA -----------------------------------------------------------------------
+		/*
+    std::vector<Real> FCoefficients_g;
+    std::vector<UInt> dirNodes(M_modalbasis->mx(),0.0);
+    FCoefficients_g = M_modalbasis->xFourierCoefficients( g_in, t, 0 );
+    UInt dof = M_etufespace->dof().numTotalDof();
+
+    // get h to scale the matrix
+    QuadratureRule interpQuad;
+    interpQuad.setDimensionShape( shapeDimension( M_velocityFespace->refFEPtr()->shape() ),
+                                                  M_velocityFespace->refFEPtr()->shape() );
+    interpQuad.setPoints( M_velocityFespace->refFEPtr()->refCoor(),
+                          std::vector<Real> ( M_velocityFespace->refFEPtr()->nbDof(), 0 ) );
+    CurrentFE interpCFE( *( M_velocityFespace->refFEPtr() ), getGeometricMap( *( M_velocityFespace->mesh() ) ), interpQuad );
+    interpCFE.update( M_velocityFespace->mesh()->element (0), UPDATE_QUAD_NODES );
+    Real h   = ( interpCFE.quadNode( 1, 0 ) - interpCFE.quadNode( 0, 0 ) ) / 2;
+
+    for ( UInt j = 0; j != M_modalbasis->mx(); ++j )
+    {
+        dirNodes[j] = j * dof;
+        systemMatrix->setCoefficient( j * dof, j * dof,
+                                      1./(h*h) );
+        rhs->setCoefficient( j * dof,
+                             1./(h*h) * FCoefficients_g[j] );
+    } */
+    //systemMatrix->diagonalize( dirNodes, 1./(h*h), *rhs, FCoefficients_g );
+
+
+		// Now neumann --------------------------
+		/*
+		Real data = 0;
+
+    for( UInt k = 0; k != M_modalbasis->mx(); ++k )
+    {
+        for ( UInt n = 0; n != M_modalbasis->qrRho()->nbQuadPt(); ++n )
+            for ( UInt h = 0; h != M_modalbasis->qrTheta()->nbQuadPt(); ++h )
+            {
+                DOF DatapFESpace( M_pressureFespace->dof() );
+                UInt ndofpFE = DatapFESpace.numTotalDof();
+                QuadratureRule interpQuad;
+                interpQuad.setDimensionShape( shapeDimension( M_pressureFespace->refFEPtr()->shape() ),
+                                                              M_pressureFespace->refFEPtr()->shape() );
+                interpQuad.setPoints( M_pressureFespace->refFEPtr()->refCoor(),
+                                      std::vector<Real> ( M_pressureFespace->refFEPtr()->nbDof(), 0 ) );
+                CurrentFE interpCFE( *( M_pressureFespace->refFEPtr() ), getGeometricMap( *( M_pressureFespace->mesh() ) ),
+                                     interpQuad );
+                interpCFE.update( M_pressureFespace->mesh()->element (0), UPDATE_QUAD_NODES );
+                Real hx   = interpCFE.quadNode( 1, 0 ) - interpCFE.quadNode( 0, 0 );
+                Real Lx = hx * ( ndofpFE - 1 );
+
+                Real thetah = M_modalbasis->qrTheta()->quadPointCoor( h, 0 );
+                Real inverseThetahat = M_modalbasis->Theta() * thetah;
+                Real rn = M_modalbasis->qrRho()->quadPointCoor( n, 0 );
+                Real inverseRhat = M_modalbasis->map()->inverseRhat()( t, Lx, rn,
+                                                                       inverseThetahat, h );
+
+                data += g_out( t, Lx, inverseRhat, inverseThetahat, 0 ) *
+                        M_modalbasis->xphirho( k, n ) * M_modalbasis->xphitheta( k, h ) *
+                        M_modalbasis->map()->fJacobian()( t, Lx, inverseRhat, inverseThetahat, h ) *
+                        rn * M_modalbasis->qrRho()->weight( n ) *
+                        M_modalbasis->Theta() * M_modalbasis->qrTheta()->weight( h );
+            }
+        rhs->setCoefficient( ( k + 1 ) * dof - 1,
+                             ( *rhs )( ( k + 1 ) * dof - 1 ) + data );
+        data = 0;
+    }*/
+
 
 }
 
@@ -750,7 +831,7 @@ evaluateForce3DGridFSI( const function_Type& fx, const function_Type& fr, const 
     }
 		return fcoeff;
 }
-
+/*
 template< typename mesh_type, typename matrix_type, typename vector_type>
 vector_type NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::
 evaluateBase3DGridFSI( const vector_type& fun )
@@ -869,7 +950,9 @@ evaluateBase3DGridFSI( const vector_type& fun )
 
     return fcoeff;
 }
+*/
 
+/*
 template< typename mesh_type, typename matrix_type, typename vector_type>
 vector_type NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::
 evaluateBaseWallGridFSI( const vector_type& fun )
@@ -920,7 +1003,7 @@ evaluateBaseWallGridFSI( const vector_type& fun )
 
     return fcoeff;
 }
-
+*/
 template< typename mesh_type, typename matrix_type, typename vector_type>
 vector_type NSHiModAssembler<mesh_type, matrix_type, vector_type, 1>::
 evaluateInitialVelocityWallFSI( const function_Type& ur0, const grid_type& grid, const function_Type& Radius )

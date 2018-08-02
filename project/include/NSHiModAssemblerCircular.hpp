@@ -470,7 +470,7 @@ public:
 
     void addStokesProblemFSI( const matrix_ptrType& systemMatrix, const Real& nu, const Real& rho_s, const Real& h_s, const Real& e, ReferenceMap& refMap, const Real& t, const Real& alpha );
     void addRhsFSI( const vector_ptrType& rhs, const Real& alpha, const Real& rho_s, const Real& h_s, const Real& e, const vector_Type& f, const vector_Type& u_old, const vector_Type& urWall_old, const vector_Type& etar_old );
-    void addBcFSI ( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs, const Real& p1, const Real& p2 );
+    void addBcFSI ( const matrix_ptrType& systemMatrix, const vector_ptrType& rhs, const Real& p1, const Real& p2, const function_Type& g_in, const function_Type& g_out, const Real& t );
 
     vector_type evaluateForce3DGridFSI( const function_Type& fx, const function_Type& fr, const function_Type& ftheta, const Real& t, const grid_type& grid );
     vector_type evaluateBase3DGridFSI( const vector_type& fun );

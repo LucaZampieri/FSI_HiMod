@@ -24,6 +24,10 @@
 #define BASEDIR "./"
 #define VERBOSE 1
 
+#ifndef FSI_ENABLED
+  #define FSI_ENABLED
+#endif
+
 using namespace LifeV;
 
 typedef RegionMesh<LinearLine> mesh_Type;
@@ -112,7 +116,10 @@ int main( int argc, char* argv[] )
       uNodes.size(), &refMap, &quadRuleBoundary, &(refMap.qrRho()), &(refMap.qrTheta()) ) );
 
 
-  MB->evaluateBasisFSI( "Zernike", "ZernikeNatural", "Zernike", "ZernikeNatural", 0 );
+  //MB->evaluateBasisFSI( "Zernike", "Zernike", "Zernike", "ZernikeNatural", 0 );
+  MB->addSliceBCFSI("dir",0,1, // ux=0 on the wall
+                "dir",0,1); // utheta=0 on the wall
+  MB->evaluateBasis();
 
   // Definition of NSHiModAssemblerCircular
   boost::shared_ptr<assembler_Type> HM( new assembler_Type( uSpace, pSpace, MB, Comm ) );

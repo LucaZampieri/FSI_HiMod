@@ -1,5 +1,6 @@
 CXX = mpicxx
 CXXFLAGS = -std=c++11 -Wall -g
+FSI_ENABLED = 1
 
 MODULE_DIR = u/sw
 PKGS_DIR = u/sw/pkgs/toolchains/gcc-glibc/5/pkgs
