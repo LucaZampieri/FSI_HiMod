@@ -12,7 +12,7 @@
 [../]
 
 [mesh]
-    num_elements        = 30 # num of elements in x-discretization
+    num_elements        = 50 # num of elements in x-discretization
     polyTypeVelocity    = P2
     polyTypePressure    = P1
 [../]
@@ -23,7 +23,7 @@
     [../]
     [./structure]
         case_radius = 0         # 0 to use the functions Radius and dRadius | 1 Stenosis | 2 Aneurysm | 3 Cone | 4 internal deformation
-        L           = 3         # length of the cylinder
+        L           = 10         # length of the cylinder
         occlusion   = 0.45      # occlusion for case 1 stenosis (also used in case 2)
         rho_s       = 1         # Density (specific mass) of the membrane (Wall)
         h_s         = 0.05      # Width of the membrane (Wall)
@@ -37,8 +37,8 @@
 
 [time]
     t0  = 0.0           # initial time
-    dt  = 5         # time step
-    T   = 50           # final time
+    dt  = 0.01        # time step
+    T   = 0.1         # final time
 [../]
 
 [functions]
@@ -46,10 +46,10 @@
     ur0 =     0      #10     #100*sin(t*100*2*3.14)
     utheta0 = 0      #10
 
-    Radius  = 1 # Radius function
+    Radius  = 0.5 # Radius function
     dRadius = 0
 
-    p1 = 1
+    p1 = 100
     p2 = 0
 
     fx     = 0                           #1000*sin(t)
