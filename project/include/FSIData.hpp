@@ -205,6 +205,11 @@ class FSIData
       return D_inverseRhat;
     }
 
+    function_Type uIn() const
+    {
+      return D_uIn;
+    }
+
     std::string polyTypeVelocity() const
     {
       return D_polyTypeVelocity;
@@ -270,6 +275,8 @@ class FSIData
     std::string D_polyTypeVelocity;
     std::string D_polyTypePressure;
 
+    std::string D_uIn_str; // input velocity string
+
     function_Type D_ux0;      // initial axial velocity
     function_Type D_ur0;      // initial radial velocity
     function_Type D_utheta0;  // initial angular velocity
@@ -283,6 +290,8 @@ class FSIData
     function_Type D_fx;       // volumetric axial force
     function_Type D_fr;       // volumetric radial force
     function_Type D_ftheta;   // volumetric angular force
+
+    function_Type D_uIn;  // input velocity
 
     // Functions for the reference map;
     function_Type D_Jr;

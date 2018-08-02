@@ -118,10 +118,11 @@ private:
   {
     return ( 3*udof*nQuadRho*nQuadTheta + j + k*nQuadRho + i*nQuadRho*nQuadTheta );
   }
-  UInt coord2index( const UInt& i, const UInt& j, const UInt& k )
+  /*UInt coord2index( const UInt& i, const UInt& j, const UInt& k )
   {
     return ( j + k*nQuadRho + i*nQuadRho*nQuadTheta );
   }
+  */
   UInt coord2indexWall( const UInt& i, const UInt& k )
   {
     return ( k + i*nQuadTheta );
@@ -138,7 +139,8 @@ private:
   // Function to convert the VectorEpetraStructured solution in a 3D solution
   void expandSolution();
 
-  void save( const Real& t, const UInt& iter ) const;
+  //void save( const Real& t, const UInt& iter ) const;
+  void save( const UInt& iter ) const;
 
   // Assembler for the fluid structure interaction problem in a circular domain
   assembler_ptrType HM;

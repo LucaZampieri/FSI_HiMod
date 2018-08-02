@@ -23,7 +23,7 @@
     [../]
     [./structure]
         case_radius = 0         # 0 to use the functions Radius and dRadius | 1 Stenosis | 2 Aneurysm | 3 Cone | 4 internal deformation
-        L           = 3         # length of the cylinder
+        L           = 10         # length of the cylinder
         occlusion   = 0.45      # occlusion for case 1 stenosis (also used in case 2)
         rho_s       = 1         # Density (specific mass) of the membrane (Wall)
         h_s         = 0.05      # Width of the membrane (Wall)
@@ -31,25 +31,27 @@
         Rin         = 1.5       # input radius for cases 3&4
         Rou         = 0.5       # output radius for cases 3&4
         Z0          = 5.        # middle length for case 4
-        delta0      = 0.45      # regulates how much occlusion we do
+        delta0      = 0.45      # regulates how much occlusion we do ?
     [../]
 [../]
 
 [time]
-    t0  = 0.0           # initial time
-    dt  = 5         # time step
-    T   = 50           # final time
+    t0  = 0.0          # initial time
+    dt  = 0.05            # time step
+    T   = 1           # final time
 [../]
 
 [functions]
-    ux0 =     0      #1000      #30
+    ux0 =     0       #100*1/(0.5+r)      #1000      #30
     ur0 =     0      #10     #100*sin(t*100*2*3.14)
     utheta0 = 0      #10
 
-    Radius  = 1 # Radius function
+    uIn     = 0 #5      #10
+
+    Radius  = 1      # Radius function
     dRadius = 0
 
-    p1 = 1
+    p1 = 100*(t<0.06)
     p2 = 0
 
     fx     = 0                           #1000*sin(t)

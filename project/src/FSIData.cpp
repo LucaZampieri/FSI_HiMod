@@ -52,6 +52,9 @@ FSIData::FSIData( GetPot dataFile ) :
          D_Radius_str(  dataFile( "functions/Radius" , "0" ) ),
          D_dRadius_str( dataFile( "functions/dRadius", "0" ) ),
 
+         D_uIn_str(     dataFile( "functions/uIn",     "0" ) ),
+         D_uIn(     muparser_function( D_uIn_str ) ),
+
 
 
 
@@ -183,6 +186,8 @@ void FSIData::printAll() const
   std::cout <<"fx = " <<D_fx_str;
   std::cout << std::setw(10) << std::internal <<"fr = " <<D_fr_str;
   std::cout << std::setw(20) << std::right <<"ftheta = " <<D_ftheta_str;
+  std::cout << std::endl;
+  std::cout <<"uIn = " <<D_uIn_str;
   std::cout << std::endl;
   std::cout << "*** end of the data print ***\n\n\n";
 }

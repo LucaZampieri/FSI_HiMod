@@ -46,6 +46,11 @@
 #include <lifev/core/array/VectorEpetra.hpp>
 #include <lifev/core/array/VectorEpetraStructured.hpp>
 
+#ifndef FSI_ENABLED
+  #define FSI_ENABLED
+#endif
+
+
 namespace LifeV
 {
 
@@ -562,6 +567,11 @@ protected:
 // -------------------------------- New FSI ------------------------------------
 
 public:
+  void addSliceBCFSI ( const std::string& BCx, const Real& mux, const Real& Chix,
+            const std::string& BCtheta, const Real& mutheta, const Real& Chitheta );
+
+public:
+
 
     NSModalSpaceCircular
     ( const Real& Rho, const Real& dRho, const Real& Theta, const UInt& Mx, const UInt& Mr, const UInt& Mtheta, const UInt& Mp, const UInt& udof,
